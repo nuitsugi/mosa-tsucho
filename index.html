@@ -3,1151 +3,963 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>もさ通帳 - 二人暮らしの生活費精算アプリ</title>
+  <title>もさ通帳 - 2人暮らし生活費計算アプリ</title>
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Google Fonts: Inter & Noto Sans JP -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
   <!-- Font Awesome for Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Kiwi+Maru:wght@400;500;700&display=swap" rel="stylesheet">
   <style>
     body {
-      font-family: 'Noto Sans JP', 'Inter', sans-serif;
-      background-color: #fcfaf2; /* 温かみのあるもさもさベージュ */
+      font-family: 'Kiwi Maru', sans-serif;
+      background-color: #fcfbf9;
     }
-    /* ふわふわ浮かぶアニメーション */
-    @keyframes float {
-      0%, 100% { transform: translateY(0px) rotate(0deg); }
-      50% { transform: translateY(-8px) rotate(2deg); }
+    .mosa-bg {
+      background-color: #f4ebe1;
     }
-    .float-animation {
-      animation: float 4s ease-in-out infinite;
+    .tab-active {
+      background-color: #5c8d70;
+      color: white;
     }
-    /* カスタムスクールバー */
-    ::-webkit-scrollbar {
-      width: 6px;
+    /* もさもさしたやわらかいボタンアニメーション */
+    .mosa-button {
+      transition: all 0.2s ease;
     }
-    ::-webkit-scrollbar-track {
-      background: #f1ebd9;
-      border-radius: 10px;
-    }
-    ::-webkit-scrollbar-thumb {
-      background: #c3b091;
-      border-radius: 10px;
+    .mosa-button:active {
+      transform: scale(0.96);
     }
   </style>
 </head>
-<body class="text-stone-800 min-h-screen flex flex-col pb-12">
+<body class="text-gray-800 min-h-screen flex flex-col pb-12">
 
-  <!-- ヘッダーエリア -->
-  <header class="bg-[#ebdcb9] border-b-4 border-[#d3c09e] py-4 px-6 sticky top-0 z-30 shadow-sm">
-    <div class="max-w-5xl mx-auto flex items-center justify-between">
-      <div class="flex items-center space-x-3">
-        <!-- もさおアイコン（SVG） -->
-        <div class="w-12 h-12 bg-white rounded-full border-2 border-stone-700 flex items-center justify-center shadow-inner overflow-hidden float-animation">
-          <svg viewBox="0 0 100 100" class="w-10 h-10">
-            <!-- もこもこボディ -->
-            <path d="M 50,15 C 35,15 25,25 25,35 C 15,35 10,45 15,55 C 8,65 15,80 25,80 C 35,85 45,80 50,80 C 55,80 65,85 75,80 C 85,80 92,65 85,55 C 90,45 85,35 75,35 C 75,25 65,15 50,15 Z" fill="#fcfaf2" stroke="#44403c" stroke-width="4" stroke-linejoin="round" />
-            <!-- もこもこの内側テクスチャ -->
-            <path d="M 30,30 Q 25,35 30,40 M 70,30 Q 75,35 70,40 M 20,50 Q 15,55 20,60 M 80,50 Q 85,55 80,60" stroke="#d3c09e" stroke-width="3" stroke-linecap="round" fill="none" />
-            <!-- 耳 -->
-            <path d="M 32,18 Q 28,8 36,12" stroke="#44403c" stroke-width="3" fill="#fcfaf2" />
-            <path d="M 68,18 Q 72,8 64,12" stroke="#44403c" stroke-width="3" fill="#fcfaf2" />
-            <!-- 目 -->
-            <circle cx="40" cy="45" r="4.5" fill="#44403c" />
-            <circle cx="60" cy="45" r="4.5" fill="#44403c" />
-            <!-- ほっぺ -->
-            <ellipse cx="34" cy="51" rx="5" ry="3" fill="#fca5a5" />
-            <ellipse cx="66" cy="51" rx="5" ry="3" fill="#fca5a5" />
-            <!-- 口（おっとり） -->
-            <path d="M 46,51 Q 50,55 54,51" stroke="#44403c" stroke-width="3.5" stroke-linecap="round" fill="none" />
-            <!-- 前髪（もさもさ） -->
-            <path d="M 42,22 Q 50,16 58,22" stroke="#44403c" stroke-width="3" fill="none" />
-          </svg>
-        </div>
-        <div>
-          <h1 class="text-2xl font-black tracking-wider text-stone-800 flex items-center">
-            もさ通帳
-            <span class="text-xs bg-stone-800 text-[#ebdcb9] px-2 py-0.5 rounded-full ml-2 font-bold">2人暮らし用</span>
-          </h1>
-          <p class="text-[10px] text-stone-600 font-bold">ゆる〜く折半、なかよく精算</p>
-        </div>
-      </div>
-      
-      <!-- 設定などのアクション -->
+  <!-- ヘッダー -->
+  <header class="bg-[#5c8d70] text-white shadow-md sticky top-0 z-50">
+    <div class="max-w-md mx-auto px-4 py-3 flex justify-between items-center">
       <div class="flex items-center space-x-2">
-        <button onclick="openConfigModal()" class="bg-white hover:bg-stone-50 border-2 border-stone-800 text-stone-800 font-bold py-2 px-3 rounded-xl shadow-sm text-sm transition-transform active:scale-95 flex items-center gap-1">
-          <i class="fa-solid fa-user-gear"></i>
-          <span class="hidden md:inline">パートナー設定</span>
+        <!-- もさもさマスコット「もさお」のミニSVGアイコン -->
+        <svg class="w-8 h-8 fill-current text-white" viewBox="0 0 100 100">
+          <!-- もこもこ外観 -->
+          <path d="M 50 15 
+                   C 38 15, 32 25, 35 35 
+                   C 22 32, 12 45, 20 58 
+                   C 10 65, 15 80, 30 80 
+                   C 38 88, 62 88, 70 80 
+                   C 85 80, 90 65, 80 58 
+                   C 88 45, 78 32, 65 35 
+                   C 68 25, 62 15, 50 15 Z" />
+          <!-- 顔パーツ（白抜き用） -->
+          <circle cx="40" cy="50" r="4" fill="#5c8d70" />
+          <circle cx="60" cy="50" r="4" fill="#5c8d70" />
+          <ellipse cx="50" cy="56" rx="5" ry="3" fill="#5c8d70" />
+        </svg>
+        <h1 class="text-xl font-bold tracking-wider">もさ通帳</h1>
+      </div>
+      <div class="flex items-center space-x-2">
+        <button onclick="openSettings()" class="p-2 hover:bg-[#4a735b] rounded-full transition-colors" title="パートナー設定">
+          <i class="fa-solid fa-gear text-lg"></i>
         </button>
       </div>
     </div>
   </header>
 
-  <!-- メインコンテンツ -->
-  <main class="max-w-5xl w-full mx-auto px-4 py-6 flex-grow flex flex-col gap-6">
+  <!-- メインコンテンツコンテナ (最大幅をスマホサイズに制限して中央寄せ) -->
+  <main class="flex-grow max-w-md w-full mx-auto px-4 mt-4">
+
+    <!-- 月選択コントローラー -->
+    <div class="bg-white rounded-2xl p-3 shadow-sm mb-4 border border-[#e8dfd5] flex justify-between items-center">
+      <button onclick="changeMonth(-1)" class="w-10 h-10 flex items-center justify-center rounded-xl bg-[#f7f5f2] hover:bg-[#ebdcd0] text-[#5c8d70] transition-colors">
+        <i class="fa-solid fa-chevron-left"></i>
+      </button>
+      <div class="text-center">
+        <span id="currentYearMonth" class="text-lg font-bold text-gray-700">2026年 5月</span>
+      </div>
+      <button onclick="changeMonth(1)" class="w-10 h-10 flex items-center justify-center rounded-xl bg-[#f7f5f2] hover:bg-[#ebdcd0] text-[#5c8d70] transition-colors">
+        <i class="fa-solid fa-chevron-right"></i>
+      </button>
+    </div>
 
     <!-- モード切り替えタブ -->
-    <div class="flex justify-center -mb-2">
-      <div class="bg-[#ebdcb9] p-1.5 rounded-2xl border-4 border-stone-800 flex space-x-1.5 shadow-[4px_4px_0px_0px_rgba(68,64,60,1)]">
-        <button id="tabInput" onclick="switchMode('input')" class="px-6 py-2.5 rounded-xl font-black text-sm flex items-center gap-2 transition-all duration-200">
-          <i class="fa-solid fa-pen-to-square"></i>
-          <span>お買い物入力</span>
-        </button>
-        <button id="tabSettle" onclick="switchMode('settle')" class="px-6 py-2.5 rounded-xl font-black text-sm flex items-center gap-2 transition-all duration-200">
-          <i class="fa-solid fa-calculator"></i>
-          <span>精算チェック</span>
-        </button>
-      </div>
+    <div class="grid grid-cols-2 gap-2 mb-4">
+      <button id="tabInput" onclick="switchMode('input')" class="py-3 rounded-2xl font-bold shadow-sm border border-[#e8dfd5] flex items-center justify-center gap-2 transition-all tab-active">
+        <i class="fa-solid fa-pen-to-square"></i> お買い物入力
+      </button>
+      <button id="tabSettle" onclick="switchMode('settle')" class="py-3 rounded-2xl font-bold shadow-sm border border-[#e8dfd5] bg-white text-gray-600 flex items-center justify-center gap-2 transition-all">
+        <i class="fa-solid fa-handshake"></i> 精算チェック
+      </button>
     </div>
-    
-    <!-- 対象月の選択と概要カード -->
-    <div id="summaryCard" class="bg-white border-4 border-stone-800 rounded-3xl p-6 shadow-[6px_6px_0px_0px_rgba(68,64,60,1)]">
-      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b-2 border-dashed border-stone-200 pb-4 mb-4">
-        <!-- 月切替 -->
-        <div class="flex items-center space-x-3">
-          <button onclick="changeMonth(-1)" class="w-10 h-10 bg-stone-100 hover:bg-stone-200 border-2 border-stone-800 rounded-xl flex items-center justify-center text-stone-800 font-bold transition-transform active:scale-95">
-            <i class="fa-solid fa-chevron-left"></i>
+
+    <!-- ==============================================
+         1. 入力モード
+         ============================================== -->
+    <div id="modeInput" class="space-y-4">
+      <!-- 買い物入力フォーム -->
+      <div class="bg-white rounded-3xl p-5 shadow-sm border border-[#e8dfd5]">
+        <h2 class="text-md font-bold text-gray-700 mb-4 flex items-center gap-2">
+          <span class="w-2 h-5 bg-[#5c8d70] rounded-full inline-block"></span>
+          お買い物の記録
+        </h2>
+
+        <form id="recordForm" onsubmit="saveRecord(event)" class="space-y-4">
+          <!-- 日付選択 -->
+          <div>
+            <label class="block text-xs font-bold text-gray-500 mb-1">日付</label>
+            <div class="relative">
+              <input type="date" id="fieldDate" required class="w-full bg-[#fcfbf9] border border-[#e8dfd5] rounded-xl px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-[#5c8d70]">
+            </div>
+          </div>
+
+          <!-- 支払者 (ユーザー選択) -->
+          <div>
+            <label class="block text-xs font-bold text-gray-500 mb-1">支払った人</label>
+            <div class="grid grid-cols-2 gap-2" id="userRadioGroup">
+              <!-- JSで動的に書き換えます -->
+            </div>
+          </div>
+
+          <!-- 金額入力 -->
+          <div>
+            <label class="block text-xs font-bold text-gray-500 mb-1">金額 (円)</label>
+            <div class="relative">
+              <input type="number" id="fieldAmount" required min="1" placeholder="金額を入力" class="w-full bg-[#fcfbf9] border border-[#e8dfd5] rounded-xl px-3 py-2.5 text-lg font-bold text-right pr-8 focus:outline-none focus:ring-2 focus:ring-[#5c8d70]">
+              <span class="absolute right-3 top-3 text-gray-400 font-bold">円</span>
+            </div>
+            <!-- クイック金額加算ボタン -->
+            <div class="grid grid-cols-4 gap-1 mt-2">
+              <button type="button" onclick="addQuickAmount(100)" class="py-1 text-xs font-bold bg-[#fcfbf9] border border-[#e8dfd5] hover:border-[#5c8d70] rounded-lg text-gray-600 transition-colors">+100</button>
+              <button type="button" onclick="addQuickAmount(1000)" class="py-1 text-xs font-bold bg-[#fcfbf9] border border-[#e8dfd5] hover:border-[#5c8d70] rounded-lg text-gray-600 transition-colors">+1k</button>
+              <button type="button" onclick="addQuickAmount(5000)" class="py-1 text-xs font-bold bg-[#fcfbf9] border border-[#e8dfd5] hover:border-[#5c8d70] rounded-lg text-gray-600 transition-colors">+5k</button>
+              <button type="button" onclick="clearAmount()" class="py-1 text-xs font-bold bg-red-50 border border-red-200 text-red-500 rounded-lg transition-colors">クリア</button>
+            </div>
+          </div>
+
+          <!-- メモ欄 (カテゴリ・内容) -->
+          <div>
+            <label class="block text-xs font-bold text-gray-500 mb-1">内容 (メモ)</label>
+            <input type="text" id="fieldMemo" placeholder="例: スーパー、日用品、電気代など" class="w-full bg-[#fcfbf9] border border-[#e8dfd5] rounded-xl px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-[#5c8d70]">
+            <!-- クイックカテゴリ -->
+            <div class="flex flex-wrap gap-1.5 mt-2">
+              <button type="button" onclick="setQuickMemo('食費 🛒')" class="px-2.5 py-1 text-xs font-medium bg-[#f0f6f2] text-[#4a735b] rounded-full border border-[#d5e6db]">🛒 食費</button>
+              <button type="button" onclick="setQuickMemo('日用品 🧴')" class="px-2.5 py-1 text-xs font-medium bg-[#f0f6f2] text-[#4a735b] rounded-full border border-[#d5e6db]">🧴 日用品</button>
+              <button type="button" onclick="setQuickMemo('外食 🍽️')" class="px-2.5 py-1 text-xs font-medium bg-[#f0f6f2] text-[#4a735b] rounded-full border border-[#d5e6db]">🍽️ 外食</button>
+              <button type="button" onclick="setQuickMemo('光熱費 ⚡')" class="px-2.5 py-1 text-xs font-medium bg-[#f0f6f2] text-[#4a735b] rounded-full border border-[#d5e6db]">⚡ 光熱費</button>
+              <button type="button" onclick="setQuickMemo('その他 📦')" class="px-2.5 py-1 text-xs font-medium bg-[#f0f6f2] text-[#4a735b] rounded-full border border-[#d5e6db]">📦 その他</button>
+            </div>
+          </div>
+
+          <!-- 登録ボタン -->
+          <button type="submit" class="w-full bg-[#5c8d70] hover:bg-[#4a735b] text-white font-bold py-3 px-4 rounded-xl shadow-md transition-all flex items-center justify-center gap-2 mosa-button">
+            <i class="fa-solid fa-plus text-sm"></i>
+            記録を保存するもさ！
           </button>
-          <div class="text-center min-w-[140px]">
-            <span id="currentMonthLabel" class="text-xl font-black text-stone-800">2026年 5月</span>
-          </div>
-          <button onclick="changeMonth(1)" class="w-10 h-10 bg-stone-100 hover:bg-stone-200 border-2 border-stone-800 rounded-xl flex items-center justify-center text-stone-800 font-bold transition-transform active:scale-95">
-            <i class="fa-solid fa-chevron-right"></i>
-          </button>
-          <button onclick="setToCurrentMonth()" class="text-xs font-bold bg-stone-200 hover:bg-stone-300 px-3 py-2 rounded-lg border border-stone-400">
-            今月
-          </button>
-        </div>
-        
-        <!-- クイックステータス -->
-        <div class="text-sm font-bold text-stone-500 bg-stone-50 px-4 py-2 rounded-2xl border border-stone-200 flex items-center gap-2">
-          <i class="fa-solid fa-receipt text-[#d3c09e]"></i>
-          登録件数: <span id="recordCount" class="text-stone-800 font-extrabold text-base">0</span>件
-        </div>
+        </form>
       </div>
 
-      <!-- パートナー別支払い総額 & 精算サマリー -->
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
-        <!-- パートナーA状況 -->
-        <div class="bg-amber-50 border-2 border-amber-200 rounded-2xl p-4 flex flex-col items-center justify-center relative overflow-hidden">
-          <div class="absolute top-2 left-2 bg-amber-400 text-white text-[10px] font-black px-2 py-0.5 rounded-full uppercase tracking-wider shadow-sm">Partner A</div>
-          <span id="partnerANameLabel" class="text-lg font-black text-stone-700 mt-2">ユーザーA</span>
-          <div class="text-2xl font-black text-amber-600 mt-1">
-            <span id="partnerATotal">0</span><span class="text-sm font-bold text-stone-500 ml-1">円</span>
-          </div>
-          <p class="text-xs text-stone-400 mt-1">買い物での支払総額</p>
+      <!-- 最近の履歴一覧 (入力モード専用のコンパクト表示) -->
+      <div class="bg-white rounded-3xl p-5 shadow-sm border border-[#e8dfd5]">
+        <div class="flex justify-between items-center mb-4">
+          <h2 class="text-md font-bold text-gray-700 flex items-center gap-2">
+            <span class="w-2 h-5 bg-[#5c8d70] rounded-full inline-block"></span>
+            今月の履歴
+          </h2>
+          <span id="monthlyCountLabel" class="text-xs bg-[#fcfbf9] border border-[#e8dfd5] px-2.5 py-1 rounded-full text-gray-500 font-bold">0件</span>
         </div>
-
-        <!-- 精算矢印 & ビジュアル表示 -->
-        <div class="bg-stone-50 border-2 border-dashed border-stone-300 rounded-2xl p-4 flex flex-col items-center justify-center min-h-[120px]">
-          <span class="text-xs font-bold text-stone-500 mb-2">💡 精算シミュレーション</span>
-          
-          <div id="settlementActionContainer" class="flex flex-col items-center justify-center w-full">
-            <!-- 動的に書き換えられます -->
-            <div class="text-center font-bold text-stone-600 py-2">データがありませんもさ</div>
-          </div>
-        </div>
-
-        <!-- パートナーB状況 -->
-        <div class="bg-emerald-50 border-2 border-emerald-200 rounded-2xl p-4 flex flex-col items-center justify-center relative overflow-hidden">
-          <div class="absolute top-2 left-2 bg-emerald-500 text-white text-[10px] font-black px-2 py-0.5 rounded-full uppercase tracking-wider shadow-sm">Partner B</div>
-          <span id="partnerBNameLabel" class="text-lg font-black text-stone-700 mt-2">ユーザーB</span>
-          <div class="text-2xl font-black text-emerald-600 mt-1">
-            <span id="partnerBTotal">0</span><span class="text-sm font-bold text-stone-500 ml-1">円</span>
-          </div>
-          <p class="text-xs text-stone-400 mt-1">買い物での支払総額</p>
-        </div>
-      </div>
-
-      <!-- 比率メーター -->
-      <div class="mt-6">
-        <div class="flex justify-between text-xs font-bold text-stone-500 mb-1">
-          <span id="barLabelA">ユーザーA (0%)</span>
-          <span id="barLabelB">ユーザーB (0%)</span>
-        </div>
-        <div class="w-full h-4 bg-stone-100 rounded-full overflow-hidden flex border border-stone-200">
-          <div id="ratioBarA" class="bg-amber-400 h-full transition-all duration-500" style="width: 50%"></div>
-          <div id="ratioBarB" class="bg-[#10b981] h-full transition-all duration-500" style="width: 50%"></div>
-        </div>
-        <div class="flex justify-between text-[11px] text-stone-400 mt-1">
-          <span>全体合計: <span id="grandTotal" class="font-bold text-stone-600">0</span> 円</span>
-          <span>折半目標 (1人あたり): <span id="halfAmount" class="font-bold text-stone-600">0</span> 円</span>
+        <div id="historyList" class="space-y-3 max-h-96 overflow-y-auto pr-1">
+          <!-- 履歴が動的に挿入されます -->
         </div>
       </div>
     </div>
 
-    <!-- もさおの一言アドバイス -->
-    <div id="mosaoAdviceContainer" class="bg-[#fcfaf2] border-4 border-stone-800 rounded-2xl p-4 flex items-start space-x-4 shadow-[4px_4px_0px_0px_rgba(68,64,60,1)] relative overflow-hidden">
-      <!-- 装飾用もさおアイコンミニ -->
-      <div class="w-14 h-14 bg-white rounded-full border-2 border-stone-800 flex-shrink-0 flex items-center justify-center overflow-hidden">
-        <svg viewBox="0 0 100 100" class="w-12 h-12">
-          <path d="M 50,15 C 35,15 25,25 25,35 C 15,35 10,45 15,55 C 8,65 15,80 25,80 C 35,85 45,80 50,80 C 55,80 65,85 75,80 C 85,80 92,65 85,55 C 90,45 85,35 75,35 C 75,25 65,15 50,15 Z" fill="#fcfaf2" stroke="#44403c" stroke-width="4" stroke-linejoin="round" />
-          <circle cx="40" cy="45" r="4.5" fill="#44403c" />
-          <circle cx="60" cy="45" r="4.5" fill="#44403c" />
-          <ellipse cx="34" cy="51" rx="5" ry="3" fill="#fca5a5" />
-          <ellipse cx="66" cy="51" rx="5" ry="3" fill="#fca5a5" />
-          <path d="M 46,51 Q 50,55 54,51" stroke="#44403c" stroke-width="3.5" stroke-linecap="round" fill="none" />
-        </svg>
-      </div>
-      <div class="flex-grow">
-        <div class="text-xs font-black text-amber-800 mb-0.5">もさおのアドバイス</div>
-        <p id="mosaoComment" class="text-xs md:text-sm font-bold text-stone-700 leading-relaxed">
-          データを入力すると、今月のふたりのやりくりバランスについてコメントするもさ！
-        </p>
-      </div>
-    </div>
 
-    <!-- 2カラムコンテンツエリア -->
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-      
-      <!-- 左：入力フォーム (4カラム分) -->
-      <div id="formContainer" class="lg:col-span-5 flex flex-col">
-        <div class="bg-white border-4 border-stone-800 rounded-3xl p-6 shadow-[5px_5px_0px_0px_rgba(68,64,60,1)] flex-grow">
-          <!-- 月切替（入力モード時にもカレンダー確認できるように月情報をフォーム近くに配置） -->
-          <div class="flex items-center justify-between mb-4 pb-3 border-b-2 border-dashed border-stone-100">
-            <h2 class="text-lg font-black text-stone-800 flex items-center gap-2">
-              <span class="w-7 h-7 bg-amber-100 text-amber-700 rounded-full flex items-center justify-center text-xs border border-amber-300">
-                <i class="fa-solid fa-plus"></i>
-              </span>
-              お買い物を記録する
-            </h2>
-            <div class="flex items-center space-x-1 bg-stone-100 px-2 py-1 rounded-xl border border-stone-200">
-              <button onclick="changeMonth(-1)" class="text-stone-500 hover:text-stone-800 p-0.5"><i class="fa-solid fa-chevron-left text-xs"></i></button>
-              <span id="inputMonthBadge" class="text-xs font-black text-stone-700 px-1 min-w-[70px] text-center">5月度</span>
-              <button onclick="changeMonth(1)" class="text-stone-500 hover:text-stone-800 p-0.5"><i class="fa-solid fa-chevron-right text-xs"></i></button>
-            </div>
-          </div>
-          
-          <form id="recordForm" onsubmit="handleFormSubmit(event)" class="space-y-4">
-            <!-- 隠しIDフィールド（編集用） -->
-            <input type="hidden" id="editRecordId" value="">
-
-            <!-- 日付選択 -->
-            <div>
-              <label class="block text-xs font-black text-stone-600 mb-1">
-                <i class="fa-regular fa-calendar-days mr-1"></i> 日付
-              </label>
-              <input type="date" id="inputDate" required class="w-full bg-stone-50 border-2 border-stone-300 rounded-xl px-4 py-2.5 font-bold text-stone-800 focus:outline-none focus:border-stone-800 transition-colors">
-            </div>
-
-            <!-- 支払者選択 -->
-            <div>
-              <label class="block text-xs font-black text-stone-600 mb-1">
-                <i class="fa-regular fa-user mr-1"></i> 支払った人
-              </label>
-              <div class="grid grid-cols-2 gap-2">
-                <button type="button" id="btnPayeeA" onclick="selectPayee('A')" class="py-2 px-3 border-2 border-amber-400 bg-amber-50 rounded-xl text-stone-800 font-black text-sm transition-all flex items-center justify-center gap-2">
-                  <span class="w-3.5 h-3.5 rounded-full bg-amber-400 block border border-white"></span>
-                  <span id="btnPayeeAName">ユーザーA</span>
-                </button>
-                <button type="button" id="btnPayeeB" onclick="selectPayee('B')" class="py-2 px-3 border-2 border-stone-200 bg-stone-50 rounded-xl text-stone-500 font-bold text-sm transition-all flex items-center justify-center gap-2">
-                  <span class="w-3.5 h-3.5 rounded-full bg-stone-300 block border border-white"></span>
-                  <span id="btnPayeeBName">ユーザーB</span>
-                </button>
-              </div>
-              <input type="hidden" id="inputPayee" value="A">
-            </div>
-
-            <!-- 金額入力 -->
-            <div>
-              <label class="block text-xs font-black text-stone-600 mb-1">
-                <i class="fa-solid fa-yen-sign mr-1"></i> 支払った金額
-              </label>
-              <div class="relative">
-                <input type="number" id="inputAmount" min="0" required placeholder="例: 1200" class="w-full bg-stone-50 border-2 border-stone-300 rounded-xl pl-10 pr-12 py-2.5 font-bold text-stone-800 focus:outline-none focus:border-stone-800 transition-colors text-lg">
-                <span class="absolute left-4 top-1/2 -translate-y-1/2 text-stone-400 font-black">¥</span>
-                <span class="absolute right-4 top-1/2 -translate-y-1/2 text-stone-400 font-bold text-xs">円</span>
-              </div>
-              <!-- かんたん金額入力支援 -->
-              <div class="flex gap-1.5 mt-2 overflow-x-auto pb-1">
-                <button type="button" onclick="adjustAmount(500)" class="text-[10px] font-bold bg-stone-100 hover:bg-stone-200 border border-stone-300 px-2.5 py-1 rounded-md text-stone-600 flex-shrink-0">+500円</button>
-                <button type="button" onclick="adjustAmount(1000)" class="text-[10px] font-bold bg-stone-100 hover:bg-stone-200 border border-stone-300 px-2.5 py-1 rounded-md text-stone-600 flex-shrink-0">+1000円</button>
-                <button type="button" onclick="adjustAmount(5000)" class="text-[10px] font-bold bg-stone-100 hover:bg-stone-200 border border-stone-300 px-2.5 py-1 rounded-md text-stone-600 flex-shrink-0">+5000円</button>
-                <button type="button" onclick="clearAmount()" class="text-[10px] font-bold bg-rose-50 hover:bg-rose-100 border border-rose-200 px-2.5 py-1 rounded-md text-rose-600 flex-shrink-0">クリア</button>
-              </div>
-            </div>
-
-            <!-- メモ/用途 -->
-            <div>
-              <label class="block text-xs font-black text-stone-600 mb-1">
-                <i class="fa-regular fa-comment mr-1"></i> メモ / カテゴリ (任意)
-              </label>
-              <input type="text" id="inputMemo" placeholder="例: スーパー、電気代、ランチなど" class="w-full bg-stone-50 border-2 border-stone-300 rounded-xl px-4 py-2.5 font-bold text-stone-800 focus:outline-none focus:border-stone-800 transition-colors text-sm">
-              <!-- クイックカテゴリ -->
-              <div class="flex flex-wrap gap-1 mt-2">
-                <button type="button" onclick="setMemo('食費')" class="text-[10px] bg-stone-100 hover:bg-stone-200 border border-stone-300 px-2.5 py-1 rounded-md text-stone-600 font-bold">🛒 食費</button>
-                <button type="button" onclick="setMemo('日用品')" class="text-[10px] bg-stone-100 hover:bg-stone-200 border border-stone-300 px-2.5 py-1 rounded-md text-stone-600 font-bold">🧼 日用品</button>
-                <button type="button" onclick="setMemo('光熱費')" class="text-[10px] bg-stone-100 hover:bg-stone-200 border border-stone-300 px-2.5 py-1 rounded-md text-stone-600 font-bold">⚡ 光熱費</button>
-                <button type="button" onclick="setMemo('外食')" class="text-[10px] bg-stone-100 hover:bg-stone-200 border border-stone-300 px-2.5 py-1 rounded-md text-stone-600 font-bold">🍕 外食</button>
-                <button type="button" onclick="setMemo('家賃')" class="text-[10px] bg-stone-100 hover:bg-stone-200 border border-stone-300 px-2.5 py-1 rounded-md text-stone-600 font-bold">🏠 家賃</button>
-              </div>
-            </div>
-
-            <!-- 登録・更新ボタン -->
-            <div class="pt-2 flex gap-2">
-              <button type="button" id="btnCancelEdit" onclick="cancelEditState()" class="hidden w-1/3 bg-stone-200 hover:bg-stone-300 text-stone-700 font-bold py-3 px-4 rounded-xl border-2 border-stone-400 transition-transform active:scale-95 text-sm">
-                戻る
-              </button>
-              <button type="submit" id="submitBtn" class="flex-grow bg-[#c3b091] hover:bg-[#b29f7f] text-stone-800 border-2 border-stone-800 font-black py-3 px-6 rounded-xl shadow-[2px_2px_0px_0px_rgba(68,64,60,1)] transition-transform active:translate-y-0.5 active:shadow-[1px_1px_0px_0px_rgba(68,64,60,1)] flex items-center justify-center gap-2 text-sm">
-                <i class="fa-solid fa-check"></i>
-                <span id="submitBtnText">この内容で登録する</span>
-              </button>
-            </div>
-          </form>
+    <!-- ==============================================
+         2. 精算モード
+         ============================================== -->
+    <div id="modeSettle" class="space-y-4 hidden">
+      <!-- もさおのアドバイスエリア -->
+      <div class="bg-white rounded-3xl p-5 shadow-sm border border-[#e8dfd5] relative overflow-hidden">
+        <!-- 背景用の肉球スタンプ -->
+        <div class="absolute right-2 bottom-2 opacity-5 pointer-events-none text-8xl text-[#5c8d70]">
+          <i class="fa-solid fa-paw"></i>
         </div>
-      </div>
 
-      <!-- 右：履歴一覧 (7カラム分) -->
-      <div id="historyContainerOuter" class="lg:col-span-7 flex flex-col">
-        <div class="bg-white border-4 border-stone-800 rounded-3xl p-6 shadow-[5px_5px_0px_0px_rgba(68,64,60,1)] flex-grow flex flex-col min-h-[450px]">
-          
-          <!-- リストヘッダー -->
-          <div class="flex items-center justify-between mb-4">
-            <h2 class="text-lg font-black text-stone-800 flex items-center gap-2">
-              <span class="w-7 h-7 bg-emerald-100 text-emerald-700 rounded-full flex items-center justify-center text-xs border border-emerald-300">
-                <i class="fa-solid fa-list-ul"></i>
-              </span>
-              今月の履歴一覧
-            </h2>
-            <div class="flex items-center space-x-1.5">
-              <span class="text-xs text-stone-400 font-bold">並び替え:</span>
-              <button onclick="toggleSortOrder()" id="btnSortOrder" class="text-xs font-black text-stone-600 hover:text-stone-800 bg-stone-100 hover:bg-stone-200 border border-stone-300 px-2 py-1 rounded-lg">
-                日付の新しい順 <i class="fa-solid fa-arrow-down-short-wide ml-0.5"></i>
-              </button>
+        <div class="flex items-start gap-4">
+          <!-- 「もさお」のもこもこマスコットSVG -->
+          <div class="w-20 h-20 flex-shrink-0 bg-[#fefefe] border-2 border-[#e8dfd5] rounded-full p-1 flex items-center justify-center relative shadow-inner">
+            <svg class="w-16 h-16" viewBox="0 0 100 100">
+              <!-- もこもこ外観 -->
+              <path d="M 50 12 
+                       C 36 12, 30 22, 33 32 
+                       C 18 30, 8 42, 16 55 
+                       C 6 62, 10 78, 26 78 
+                       C 34 86, 66 86, 74 78 
+                       C 90 78, 94 62, 84 55 
+                       C 92 42, 82 30, 67 32 
+                       C 70 22, 64 12, 50 12 Z" fill="#f5ebe0" stroke="#d5c8bb" stroke-width="2"/>
+              <!-- お耳（もさもさ） -->
+              <path d="M 26 30 C 18 18, 12 38, 23 42 Z" fill="#e3d4c5" />
+              <path d="M 74 30 C 82 18, 88 38, 77 42 Z" fill="#e3d4c5" />
+              <!-- 目（やさしいブラウン） -->
+              <circle cx="41" cy="46" r="3.5" fill="#4e3c30" />
+              <circle cx="59" cy="46" r="3.5" fill="#4e3c30" />
+              <circle cx="40" cy="44" r="1" fill="white" />
+              <circle cx="58" cy="44" r="1" fill="white" />
+              <!-- 鼻口 -->
+              <ellipse cx="50" cy="52" rx="4" ry="2.5" fill="#4e3c30" />
+              <!-- ほっぺピンク -->
+              <circle cx="34" cy="52" r="3" fill="#fca5a5" opacity="0.6" />
+              <circle cx="66" cy="52" r="3" fill="#fca5a5" opacity="0.6" />
+            </svg>
+            <div class="absolute -bottom-1 bg-[#5c8d70] text-white text-[10px] font-bold px-2 py-0.5 rounded-full border border-white">
+              もさお
             </div>
           </div>
 
-          <!-- 履歴表示コンテナ -->
-          <div class="flex-grow overflow-y-auto max-h-[400px] border-2 border-stone-200 rounded-2xl bg-stone-50 p-3" id="historyContainer">
-            <!-- 履歴データがJavaScriptによって動的に挿入されます -->
+          <!-- ふきだしアドバイス -->
+          <div class="flex-grow bg-[#fcf9f5] border border-[#e3dcd3] rounded-2xl p-3 text-sm text-gray-700 relative">
+            <!-- ふきだしの三角 -->
+            <div class="absolute left-0 top-6 w-3 h-3 bg-[#fcf9f5] border-b border-l border-[#e3dcd3] -translate-x-1.5 rotate-45"></div>
+            <p id="papuComment" class="leading-relaxed font-medium">
+              今月も仲良くお買い物管理するもさ！精算データをまとめたもさ🐾
+            </p>
           </div>
-
-          <!-- 全削除・エクスポート等のお助け機能 -->
-          <div class="mt-4 pt-4 border-t border-stone-100 flex justify-between items-center text-xs">
-            <button onclick="clearAllDataConfirm()" class="text-rose-500 hover:text-rose-700 font-bold flex items-center gap-1">
-              <i class="fa-regular fa-trash-can"></i>
-              <span>全データをリセット</span>
-            </button>
-            <span class="text-stone-400 font-semibold">※データはブラウザに一時保存されていますもさ</span>
-          </div>
-
         </div>
       </div>
 
-    </div>
+      <!-- 精算結果ボード -->
+      <div class="bg-white rounded-3xl p-5 shadow-sm border border-[#e8dfd5]">
+        <h2 class="text-md font-bold text-gray-700 mb-4 flex items-center gap-2">
+          <span class="w-2 h-5 bg-[#5c8d70] rounded-full inline-block"></span>
+          精算レポート
+        </h2>
 
-    <!-- お助けセクション：もさ通帳のしくみ -->
-    <div class="bg-[#ebdcb9] border-4 border-stone-800 rounded-3xl p-6 shadow-[4px_4px_0px_0px_rgba(68,64,60,1)] mt-2">
-      <h3 class="text-md font-black text-stone-800 mb-3 flex items-center gap-1.5">
-        <i class="fa-solid fa-circle-question text-stone-700"></i>
-        もさ通帳のかんたん精算ルール
-      </h3>
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs font-bold text-stone-700">
-        <div class="bg-white p-3 rounded-xl border border-[#d3c09e]">
-          <span class="text-amber-700 font-black block mb-1">1. それぞれお買い物</span>
-          二人の共同生活で使うものは、各自の財布（または別々のカード）から支払って、アプリに入力します。
+        <!-- 各自の合計支払い額 -->
+        <div class="grid grid-cols-2 gap-4 mb-5">
+          <div class="bg-[#fcfbf9] p-4 rounded-2xl border border-[#ebdcd0] text-center">
+            <p id="userANameLabel" class="text-xs font-bold text-amber-600 mb-1">ユーザーA</p>
+            <p id="userATotal" class="text-xl font-black text-gray-800">0円</p>
+          </div>
+          <div class="bg-[#f4faf6] p-4 rounded-2xl border border-[#d3ebd9] text-center">
+            <p id="userBNameLabel" class="text-xs font-bold text-emerald-600 mb-1">ユーザーB</p>
+            <p id="userBTotal" class="text-xl font-black text-gray-800">0円</p>
+          </div>
         </div>
-        <div class="bg-white p-3 rounded-xl border border-[#d3c09e]">
-          <span class="text-amber-700 font-black block mb-1">2. 全体の合計額を折半</span>
-          例えば、二人で支払った全体の合計が 7,600円 なら、各自の負担すべき「折半額」は半分の 3,800円 です。
+
+        <!-- 支出バランス比率メーター -->
+        <div class="mb-5">
+          <div class="flex justify-between text-xs text-gray-500 font-bold mb-1.5">
+            <span id="userAMeterLabel">ユーザーA: 50%</span>
+            <span id="userBMeterLabel">ユーザーB: 50%</span>
+          </div>
+          <div class="w-full h-4 bg-gray-100 rounded-full overflow-hidden flex">
+            <div id="meterBarA" class="bg-[#dca474] h-full transition-all duration-500" style="width: 50%"></div>
+            <div id="meterBarB" class="bg-[#5c8d70] h-full transition-all duration-500" style="width: 50%"></div>
+          </div>
         </div>
-        <div class="bg-white p-3 rounded-xl border border-[#d3c09e]">
-          <span class="text-amber-700 font-black block mb-1">3. 差額の半分を渡す</span>
-          多く支払っていた方に、少なかった方が「差額の半分」を支払うだけで、きれいに折半が完了します！
+
+        <!-- 精算おねがいカード -->
+        <div class="bg-[#faf6f0] border border-[#e8dfd5] rounded-2xl p-4 text-center">
+          <p class="text-xs font-bold text-gray-500 mb-1">🤝 折半するための精算額</p>
+          <div id="settleActionBox" class="py-2">
+            <!-- 精算アクションテキストが挿入されます -->
+          </div>
+        </div>
+      </div>
+
+      <!-- 全ての履歴 (精算モードでは全幅で詳しく確認可能) -->
+      <div class="bg-white rounded-3xl p-5 shadow-sm border border-[#e8dfd5]">
+        <div class="flex justify-between items-center mb-4">
+          <h2 class="text-md font-bold text-gray-700 flex items-center gap-2">
+            <span class="w-2 h-5 bg-[#5c8d70] rounded-full inline-block"></span>
+            お買い物明細 (全件)
+          </h2>
+          <span id="monthlyTotalLabel" class="text-xs bg-[#5c8d70] text-white px-2.5 py-1 rounded-full font-bold">合計: 0円</span>
+        </div>
+        <div id="fullHistoryList" class="space-y-3">
+          <!-- 履歴が動的に挿入されます -->
         </div>
       </div>
     </div>
 
   </main>
 
-  <!-- フッター -->
-  <footer class="text-center text-xs font-bold text-stone-400 mt-auto py-6">
-    © 2026 もさ通帳 by Google Gemini. All Rights Reserved.
-  </footer>
+  <!-- ==============================================
+       各種モーダル・設定画面
+       ============================================== -->
 
-  <!-- モーダル: パートナー設定 -->
-  <div id="configModal" class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300 px-4">
-    <div class="bg-white border-4 border-stone-800 rounded-3xl max-w-sm w-full p-6 shadow-2xl transform scale-95 transition-transform duration-300 overflow-y-auto max-h-[90vh]" id="configModalBody">
-      <div class="flex justify-between items-center mb-4 pb-2 border-b-2 border-dashed border-stone-100">
-        <h3 class="text-lg font-black text-stone-800 flex items-center gap-2">
-          <i class="fa-solid fa-user-gear text-[#c3b091]"></i>
-          パートナー設定
+  <!-- パートナー・データ同期設定モーダル -->
+  <div id="settingsModal" class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-white w-full max-w-md rounded-3xl overflow-hidden shadow-2xl border border-gray-100 flex flex-col max-h-[90vh]">
+      <!-- モーダルヘッダー -->
+      <div class="bg-[#5c8d70] text-white px-6 py-4 flex justify-between items-center">
+        <h3 class="font-bold text-lg flex items-center gap-2">
+          <i class="fa-solid fa-gear"></i> パートナー＆データ同期
         </h3>
-        <button onclick="closeConfigModal()" class="text-stone-400 hover:text-stone-700 transition-colors">
-          <i class="fa-solid fa-xmark text-lg"></i>
+        <button onclick="closeSettings()" class="text-white hover:text-gray-200">
+          <i class="fa-solid fa-xmark text-xl"></i>
         </button>
       </div>
 
-      <div class="space-y-4">
-        <div>
-          <label class="block text-xs font-black text-stone-600 mb-1">パートナー A のお名前</label>
-          <input type="text" id="configPartnerA" class="w-full bg-stone-50 border-2 border-stone-300 rounded-xl px-3 py-2 font-bold text-stone-800 focus:outline-none focus:border-stone-800">
-        </div>
-        <div>
-          <label class="block text-xs font-black text-stone-600 mb-1">パートナー B のお名前</label>
-          <input type="text" id="configPartnerB" class="w-full bg-stone-50 border-2 border-stone-300 rounded-xl px-3 py-2 font-bold text-stone-800 focus:outline-none focus:border-stone-800">
-        </div>
-        <div class="bg-stone-50 p-2.5 rounded-xl border border-stone-200 text-[10px] text-stone-500 font-semibold leading-relaxed">
-          ※名前を変更すると、画面上のすべての表記が設定した名前に更新されます。
+      <!-- モーダルボディ (スクロール可能) -->
+      <div class="p-6 space-y-6 overflow-y-auto">
+        <!-- パートナー名の設定 -->
+        <div class="space-y-3">
+          <h4 class="font-bold text-sm text-gray-700 border-b border-gray-100 pb-1.5 flex items-center gap-2">
+            <i class="fa-solid fa-user-group text-emerald-600"></i> パートナー設定
+          </h4>
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block text-xs font-bold text-gray-500 mb-1">ユーザーAのお名前</label>
+              <input type="text" id="configUserA" placeholder="例: もさお" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#5c8d70]">
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-gray-500 mb-1">ユーザーBのお名前</label>
+              <input type="text" id="configUserB" placeholder="例: もさこ" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#5c8d70]">
+            </div>
+          </div>
+          <button onclick="savePartnerNames()" class="w-full py-2 bg-[#5c8d70]/10 hover:bg-[#5c8d70]/20 text-[#5c8d70] font-bold text-xs rounded-xl transition-colors">
+            名前を更新する
+          </button>
         </div>
 
-        <!-- データのバックアップ・共有セクション -->
-        <div class="border-t-2 border-dashed border-stone-200 pt-4">
-          <label class="block text-xs font-black text-stone-600 mb-1">データのバックアップ・共有</label>
+        <!-- LINE同期・データ書き出し -->
+        <div class="space-y-3">
+          <h4 class="font-bold text-sm text-gray-700 border-b border-gray-100 pb-1.5 flex items-center gap-2">
+            <i class="fa-solid fa-paper-plane text-emerald-600"></i> スマホ間のデータ同期 (LINEコピペ用)
+          </h4>
+          
+          <div class="space-y-2">
+            <!-- 今月分だけのスマート書き出し -->
+            <div>
+              <p class="text-xs text-gray-500 mb-1.5 leading-relaxed">
+                <span class="bg-[#5c8d70] text-white text-[9px] font-bold px-1.5 py-0.5 rounded mr-1">おすすめ</span>
+                <strong>今月分だけ</strong>のデータをコンパクトにして書き出します（文字数が短く、普段のやり取りに最適もさ！）。
+              </p>
+              <button onclick="exportCurrentMonthData()" class="w-full py-2.5 bg-[#5c8d70] hover:bg-[#4a735b] text-white font-bold text-xs rounded-xl transition-colors flex items-center justify-center gap-1.5 shadow-sm">
+                <i class="fa-solid fa-copy"></i> 今月のデータだけコピー (短い文字列)
+              </button>
+            </div>
+
+            <!-- 従来通りの全件バックアップ -->
+            <div class="pt-2">
+              <p class="text-xs text-gray-500 mb-1.5 leading-relaxed">
+                アプリに登録されている過去全てのデータを書き出します（予備のフルバックアップ用もさ）。
+              </p>
+              <button onclick="exportAllData()" class="w-full py-2.5 bg-gray-700 hover:bg-gray-800 text-white font-bold text-xs rounded-xl transition-colors flex items-center justify-center gap-1.5 shadow-sm">
+                <i class="fa-solid fa-file-export"></i> 全てのデータをコピー (長い文字列)
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- データ読み込み -->
+        <div class="space-y-3">
+          <h4 class="font-bold text-sm text-gray-700 border-b border-gray-100 pb-1.5 flex items-center gap-2">
+            <i class="fa-solid fa-file-import text-blue-500"></i> 相手からのデータを読み込み
+          </h4>
+          <p class="text-xs text-gray-500 leading-relaxed">
+            相手から送られてきた「長いコードのような文字列」を下に貼り付けて、読み込んでください。
+          </p>
+          <textarea id="importTextarea" rows="3" placeholder='{"records": ... または {"type":"month_patch"...' class="w-full bg-gray-50 border border-gray-200 rounded-xl p-2.5 text-xs font-mono focus:outline-none focus:ring-2 focus:ring-[#5c8d70]"></textarea>
+          
           <div class="grid grid-cols-2 gap-2">
-            <button onclick="exportData()" class="bg-stone-100 hover:bg-stone-200 border border-stone-400 text-stone-700 font-bold py-2 px-3 rounded-xl text-xs transition-transform active:scale-95 flex items-center justify-center gap-1">
-              <i class="fa-solid fa-copy"></i> コピーして書き出し
+            <button onclick="importData(false)" class="py-2.5 bg-[#5c8d70] hover:bg-[#4a735b] text-white font-bold text-xs rounded-xl transition-colors">
+              差分をマージして追加
             </button>
-            <button onclick="openImportArea()" class="bg-stone-100 hover:bg-stone-200 border border-stone-400 text-stone-700 font-bold py-2 px-3 rounded-xl text-xs transition-transform active:scale-95 flex items-center justify-center gap-1">
-              <i class="fa-solid fa-file-import"></i> データを読み込み
+            <button onclick="importData(true)" class="py-2.5 bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 font-bold text-xs rounded-xl transition-colors">
+              全て上書きで読み込み
             </button>
           </div>
-          <div id="importArea" class="hidden mt-2 space-y-2">
-            <textarea id="importJsonText" placeholder="ここにコピーしたデータを貼り付けてください" class="w-full h-20 bg-stone-50 border border-stone-300 rounded-lg p-2 text-xs font-mono focus:outline-none"></textarea>
-            <button onclick="importData()" class="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-1.5 rounded-lg text-xs transition-transform active:scale-95">読み込みを実行</button>
-          </div>
+          <p class="text-[10px] text-gray-400 leading-relaxed">
+            ※「マージして追加」は相手の最新データを取り込み、あなたの過去のデータは残します。<br>
+            ※「全て上書き」は貼り付けたデータで完全にアプリの状態を置き換えます。
+          </p>
         </div>
-      </div>
 
-      <div class="mt-6 flex space-x-2">
-        <button onclick="closeConfigModal()" class="w-1/3 bg-stone-100 hover:bg-stone-200 border-2 border-stone-400 text-stone-600 font-bold py-2.5 rounded-xl text-sm transition-transform active:scale-95">
-          キャンセル
-        </button>
-        <button onclick="saveConfig()" class="flex-grow bg-[#c3b091] hover:bg-[#b29f7f] border-2 border-stone-800 text-stone-800 font-black py-2.5 rounded-xl text-sm transition-transform active:scale-95 shadow-[2px_2px_0px_0px_rgba(68,64,60,1)]">
-          設定を保存する
-        </button>
+        <!-- リセット -->
+        <div class="bg-red-50 p-4 rounded-2xl border border-red-100">
+          <h4 class="font-bold text-xs text-red-700 mb-1 flex items-center gap-1.5">
+            <i class="fa-solid fa-circle-exclamation"></i> データの初期化 (全削除)
+          </h4>
+          <p class="text-[11px] text-red-600/80 mb-3 leading-relaxed">
+            お買い物履歴とパートナー設定をすべて消去します。精算が完全に終わって翌月新しくスタートする場合にご使用ください。
+          </p>
+          <button onclick="confirmReset()" class="w-full py-2 bg-red-600 hover:bg-red-700 text-white font-bold text-xs rounded-xl transition-colors">
+            アプリのデータをすべて削除するもさ🐾
+          </button>
+        </div>
+
       </div>
     </div>
   </div>
 
-  <!-- カスタムダイアログ（alert/confirmの代わり） -->
-  <div id="customDialog" class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300 px-4">
-    <div class="bg-white border-4 border-stone-800 rounded-2xl max-w-sm w-full p-6 shadow-2xl transform scale-95 transition-transform duration-300" id="customDialogBody">
-      <div class="text-center">
-        <!-- ダイアログアイコン -->
-        <div class="w-12 h-12 bg-rose-100 text-rose-600 rounded-full flex items-center justify-center mx-auto mb-3 border border-rose-200">
-          <i id="dialogIcon" class="fa-solid fa-triangle-exclamation text-lg"></i>
+  <!-- カスタムトースト・メッセージ通知 -->
+  <div id="toastMessage" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-[100] bg-gray-900 text-white px-5 py-3 rounded-full text-xs font-bold shadow-lg flex items-center gap-2 transform translate-y-12 opacity-0 pointer-events-none transition-all duration-300">
+    <i id="toastIcon" class="fa-solid fa-circle-info"></i>
+    <span id="toastText">メッセージがコピーされました</span>
+  </div>
+
+  <!-- カスタムダイアログ・モーダル (alert/confirmの代替用) -->
+  <div id="customDialog" class="fixed inset-0 bg-black/60 z-[200] flex items-center justify-center p-4 hidden">
+    <div class="bg-white rounded-3xl w-full max-w-sm overflow-hidden shadow-2xl border border-gray-100">
+      <div class="p-6 text-center">
+        <!-- ダイアログ用アイコン -->
+        <div class="w-16 h-16 bg-[#faf6f0] text-[#5c8d70] rounded-full flex items-center justify-center mx-auto mb-4 text-2xl border border-[#e8dfd5]">
+          <i id="dialogIcon" class="fa-solid fa-paw"></i>
         </div>
-        <h4 id="dialogTitle" class="text-md font-black text-stone-800 mb-2">確認</h4>
-        <p id="dialogMessage" class="text-xs font-bold text-stone-600 mb-6 px-2 leading-relaxed">メッセージ内容</p>
-      </div>
-      <div class="flex space-x-2 justify-center">
-        <button id="dialogCancelBtn" onclick="closeCustomDialog()" class="w-1/2 bg-stone-100 hover:bg-stone-200 border border-stone-300 text-stone-600 font-bold py-2 rounded-xl text-xs">
-          いいえ
-        </button>
-        <button id="dialogConfirmBtn" class="w-1/2 bg-rose-500 hover:bg-rose-600 text-white font-bold py-2 rounded-xl text-xs shadow-sm">
-          はい
-        </button>
+        <h4 id="dialogTitle" class="font-bold text-lg text-gray-800 mb-2">確認</h4>
+        <p id="dialogMessage" class="text-sm text-gray-500 leading-relaxed mb-6">メッセージがここに入ります。</p>
+        
+        <!-- ボタン -->
+        <div id="dialogButtons" class="flex gap-2">
+          <!-- 動的に変化します -->
+        </div>
       </div>
     </div>
   </div>
 
-  <!-- アプリケーション ロジック -->
+  <!-- ==============================================
+       JavaScript ロジック
+       ============================================== -->
   <script>
-    // --- 初期状態設定 ---
-    let appState = {
-      // ユーザー設定
-      partnerA: "ユーザーA",
-      partnerB: "ユーザーB",
-      
-      // 表示中の月 (Date型)
-      currentMonth: new Date(), 
-      
-      // 並び替え順: 'desc' (新しい順), 'asc' (古い順)
-      sortOrder: 'desc',
-
-      // 表示モード: 'input' (入力モード), 'settle' (精算モード)
-      mode: 'input',
-      
-      // 登録された支払履歴データ
+    // --- アプリの初期状態データ & ステート管理 ---
+    let state = {
+      userA: "ユーザーA",
+      userB: "ユーザーB",
+      currentYear: 2026,
+      currentMonth: 5,
+      currentMode: "input", // input | settle
       records: []
     };
 
-    // サンプルデータ (ユーザーが仕組みを理解しやすいように初期投入)
-    const initialSamples = [
-      {
-        id: "sample-1",
-        date: "2026-05-15",
-        payee: "A",
-        amount: 5000,
-        memo: "🛒 スーパーで食材買い出し"
-      },
-      {
-        id: "sample-2",
-        date: "2026-05-18",
-        payee: "B",
-        amount: 2600,
-        memo: "🧼 日用品、お風呂洗剤など"
-      }
+    // サンプルデータ
+    const SAMPLE_RECORDS = [
+      { id: "1", date: "2026-05-01", user: "A", amount: 3500, memo: "イオン 食料品 🛒" },
+      { id: "2", date: "2026-05-01", user: "B", amount: 1200, memo: "スギ薬局 洗剤 🧴" },
+      { id: "3", date: "2026-05-10", user: "A", amount: 1500, memo: "マクドナルド 🍽️" },
+      { id: "4", date: "2026-05-14", user: "B", amount: 1400, memo: "トイレットペーパー 🧴" },
+      { id: "5", date: "2026-05-20", user: "A", amount: 4800, memo: "スーパーまとめ買い 🛒" }
     ];
 
-    // ローカルストレージキー
-    const STORAGE_KEY = 'mosa_tsucho_records_v1';
-    const CONFIG_KEY = 'mosa_tsucho_config_v1';
-
-    // 起動時の初期化
+    // --- 起動処理 ---
     window.onload = function() {
-      // 1. 設定の読込
-      const savedConfig = localStorage.getItem(CONFIG_KEY);
-      if (savedConfig) {
-        try {
-          const parsed = JSON.parse(savedConfig);
-          appState.partnerA = parsed.partnerA || "ユーザーA";
-          appState.partnerB = parsed.partnerB || "ユーザーB";
-        } catch(e) {
-          console.error("Config load error", e);
-        }
-      }
-
-      // 2. 支払履歴データの読込
-      const savedRecords = localStorage.getItem(STORAGE_KEY);
-      if (savedRecords) {
-        try {
-          appState.records = JSON.parse(savedRecords);
-        } catch(e) {
-          console.error("Records load error", e);
-          appState.records = [...initialSamples];
-        }
-      } else {
-        // 保存データがない場合はサンプルを使用
-        appState.records = [...initialSamples];
-        saveRecordsToStorage();
-      }
-
-      // 3. 入力フォームの日付を本日に設定
-      const todayStr = new Date().toISOString().substring(0, 10);
-      document.getElementById('inputDate').value = todayStr;
-
-      // 4. モードを初期の'input'に切り替え
-      switchMode('input');
-
-      // 5. UIの更新
-      updateUI();
+      initApp();
     };
 
-    // --- ローカルストレージ保存ヘルパー ---
-    function saveRecordsToStorage() {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(appState.records));
-    }
-
-    function saveConfigToStorage() {
-      const config = {
-        partnerA: appState.partnerA,
-        partnerB: appState.partnerB
-      };
-      localStorage.setItem(CONFIG_KEY, JSON.stringify(config));
-    }
-
-    // --- モード切替の処理 ---
-    function switchMode(mode) {
-      appState.mode = mode;
-
-      const summaryCard = document.getElementById('summaryCard');
-      const mosaoAdviceContainer = document.getElementById('mosaoAdviceContainer');
-      const formContainer = document.getElementById('formContainer');
-      const historyContainerOuter = document.getElementById('historyContainerOuter');
-      
-      const tabInput = document.getElementById('tabInput');
-      const tabSettle = document.getElementById('tabSettle');
-
-      if (mode === 'input') {
-        // --- 入力モード時 ---
-        summaryCard.classList.add('hidden');
-        mosaoAdviceContainer.classList.add('hidden');
-        formContainer.classList.remove('hidden');
-
-        // 履歴エリアを通常の横幅に戻す
-        historyContainerOuter.classList.remove('lg:col-span-12');
-        historyContainerOuter.classList.add('lg:col-span-7');
-
-        // タブのアクティブスタイル
-        tabInput.className = "px-6 py-2.5 rounded-xl font-black text-sm flex items-center gap-2 transition-all duration-200 bg-white text-stone-800 border-2 border-stone-800 shadow-[2px_2px_0px_0px_rgba(68,64,60,1)]";
-        tabSettle.className = "px-6 py-2.5 rounded-xl font-bold text-sm flex items-center gap-2 transition-all duration-200 text-stone-500 hover:text-stone-800 hover:bg-stone-200/50";
+    function initApp() {
+      // 1. ローカルストレージからデータ復元
+      const savedData = localStorage.getItem("papu_ledger_data");
+      if (savedData) {
+        try {
+          const parsed = JSON.parse(savedData);
+          state.userA = parsed.userA || "ユーザーA";
+          state.userB = parsed.userB || "ユーザーB";
+          state.records = parsed.records || [];
+        } catch(e) {
+          console.error("データの読み込みに失敗したため、初期状態で起動します。", e);
+          loadSampleData();
+        }
       } else {
-        // --- 精算モード時 ---
-        summaryCard.classList.remove('hidden');
-        mosaoAdviceContainer.classList.remove('hidden');
-        formContainer.classList.add('hidden');
-
-        // 精算に集中できるように履歴エリアを幅広にする
-        historyContainerOuter.classList.remove('lg:col-span-7');
-        historyContainerOuter.classList.add('lg:col-span-12');
-
-        // タブのアクティブスタイル
-        tabInput.className = "px-6 py-2.5 rounded-xl font-bold text-sm flex items-center gap-2 transition-all duration-200 text-stone-500 hover:text-stone-800 hover:bg-stone-200/50";
-        tabSettle.className = "px-6 py-2.5 rounded-xl font-black text-sm flex items-center gap-2 transition-all duration-200 bg-[#c3b091] text-stone-800 border-2 border-stone-800 shadow-[2px_2px_0px_0px_rgba(68,64,60,1)]";
+        loadSampleData();
       }
+
+      // 2. 現在の日付を本日に初期設定
+      const today = new Date();
+      state.currentYear = today.getFullYear();
+      state.currentMonth = today.getMonth() + 1;
+
+      // フォームの初期日付
+      const yearStr = state.currentYear;
+      const monthStr = String(state.currentMonth).padStart(2, '0');
+      const dayStr = String(today.getDate()).padStart(2, '0');
+      document.getElementById('fieldDate').value = `${yearStr}-${monthStr}-${dayStr}`;
+
+      // 3. 描画更新
+      renderApp();
     }
 
-    // --- UI更新処理メイン ---
-    function updateUI() {
-      // パートナー名の更新
-      document.getElementById('partnerANameLabel').innerText = appState.partnerA;
-      document.getElementById('partnerBNameLabel').innerText = appState.partnerB;
-      document.getElementById('btnPayeeAName').innerText = appState.partnerA;
-      document.getElementById('btnPayeeBName').innerText = appState.partnerB;
-      document.getElementById('barLabelA').innerText = `${appState.partnerA} (0%)`;
-      document.getElementById('barLabelB').innerText = `${appState.partnerB} (0%)`;
+    function loadSampleData() {
+      state.userA = "まーくん";
+      state.userB = "みーちゃん";
+      state.records = [...SAMPLE_RECORDS];
+      saveToStorage();
+    }
 
-      // 表示中の月のラベル更新 (YYYY年 MM月)
-      const year = appState.currentMonth.getFullYear();
-      const month = appState.currentMonth.getMonth(); // 0-indexed
-      document.getElementById('currentMonthLabel').innerText = `${year}年 ${month + 1}月`;
-      document.getElementById('inputMonthBadge').innerText = `${month + 1}月度`;
+    // ローカルストレージに状態を保存する
+    function saveToStorage() {
+      localStorage.setItem("papu_ledger_data", JSON.stringify({
+        userA: state.userA,
+        userB: state.userB,
+        records: state.records
+      }));
+    }
 
-      // 当当月のレコードのみ抽出
-      const filteredRecords = getFilteredRecordsForCurrentMonth();
-      
-      // レコード件数
-      document.getElementById('recordCount').innerText = filteredRecords.length;
+    // --- 画面レンダリング ---
+    function renderApp() {
+      // 1. 月表示の更新
+      document.getElementById("currentYearMonth").innerText = `${state.currentYear}年 ${state.currentMonth}月`;
 
-      // 合計金額の計算
+      // 2. モード切り替えによる表示制御
+      if (state.currentMode === "input") {
+        document.getElementById("modeInput").classList.remove("hidden");
+        document.getElementById("modeSettle").classList.add("hidden");
+        document.getElementById("tabInput").className = "py-3 rounded-2xl font-bold shadow-sm border border-[#e8dfd5] flex items-center justify-center gap-2 transition-all tab-active";
+        document.getElementById("tabSettle").className = "py-3 rounded-2xl font-bold shadow-sm border border-[#e8dfd5] bg-white text-gray-600 flex items-center justify-center gap-2 transition-all";
+      } else {
+        document.getElementById("modeInput").classList.add("hidden");
+        document.getElementById("modeSettle").classList.remove("hidden");
+        document.getElementById("tabInput").className = "py-3 rounded-2xl font-bold shadow-sm border border-[#e8dfd5] bg-white text-gray-600 flex items-center justify-center gap-2 transition-all";
+        document.getElementById("tabSettle").className = "py-3 rounded-2xl font-bold shadow-sm border border-[#e8dfd5] flex items-center justify-center gap-2 transition-all tab-active";
+      }
+
+      // 3. 設定項目(モーダル)の初期値
+      document.getElementById("configUserA").value = state.userA;
+      document.getElementById("configUserB").value = state.userB;
+
+      // 4. 入力フォームのユーザーラジオボタン更新
+      const userRadioGroup = document.getElementById("userRadioGroup");
+      userRadioGroup.innerHTML = `
+        <label class="cursor-pointer">
+          <input type="radio" name="fieldUser" value="A" checked class="peer sr-only">
+          <div class="border border-[#e8dfd5] rounded-xl py-3 px-2 text-center text-sm font-bold bg-[#fcfbf9] text-gray-500 peer-checked:bg-[#dca474] peer-checked:text-white peer-checked:border-transparent transition-all">
+            <i class="fa-solid fa-user-astronaut mr-1"></i> ${state.userA}
+          </div>
+        </label>
+        <label class="cursor-pointer">
+          <input type="radio" name="fieldUser" value="B" class="peer sr-only">
+          <div class="border border-[#e8dfd5] rounded-xl py-3 px-2 text-center text-sm font-bold bg-[#fcfbf9] text-gray-500 peer-checked:bg-[#5c8d70] peer-checked:text-white peer-checked:border-transparent transition-all">
+            <i class="fa-solid fa-user-ninja mr-1"></i> ${state.userB}
+          </div>
+        </label>
+      `;
+
+      // 5. データ集計
+      const currentMonthRecords = state.records.filter(r => {
+        const [y, m] = r.date.split("-").map(Number);
+        return y === state.currentYear && m === state.currentMonth;
+      });
+
+      // 日付順にソート（降順・新しいものが上）
+      currentMonthRecords.sort((a, b) => b.date.localeCompare(a.date));
+
+      // 集計
       let totalA = 0;
       let totalB = 0;
-
-      filteredRecords.forEach(rec => {
-        if (rec.payee === 'A') {
-          totalA += rec.amount;
-        } else if (rec.payee === 'B') {
-          totalB += rec.amount;
-        }
+      currentMonthRecords.forEach(r => {
+        if (r.user === "A") totalA += r.amount;
+        if (r.user === "B") totalB += r.amount;
       });
+      const totalAmount = totalA + totalB;
 
-      const grandTotal = totalA + totalB;
-      const halfAmount = Math.round(grandTotal / 2);
+      // ラベル・メーター更新
+      document.getElementById("userANameLabel").innerText = state.userA;
+      document.getElementById("userBNameLabel").innerText = state.userB;
+      document.getElementById("userATotal").innerText = `${totalA.toLocaleString()}円`;
+      document.getElementById("userBTotal").innerText = `${totalB.toLocaleString()}円`;
+      document.getElementById("monthlyTotalLabel").innerText = `合計: ${totalAmount.toLocaleString()}円`;
+      document.getElementById("monthlyCountLabel").innerText = `${currentMonthRecords.length}件`;
 
-      // DOMに数値を流し込み
-      document.getElementById('partnerATotal').innerText = totalA.toLocaleString();
-      document.getElementById('partnerBTotal').innerText = totalB.toLocaleString();
-      document.getElementById('grandTotal').innerText = grandTotal.toLocaleString();
-      document.getElementById('halfAmount').innerText = halfAmount.toLocaleString();
-
-      // 比率バーの計算 & 更新
+      // メーター比率計算
       let percentA = 50;
       let percentB = 50;
-      if (grandTotal > 0) {
-        percentA = Math.round((totalA / grandTotal) * 100);
+      if (totalAmount > 0) {
+        percentA = Math.round((totalA / totalAmount) * 100);
         percentB = 100 - percentA;
       }
-      document.getElementById('ratioBarA').style.width = `${percentA}%`;
-      document.getElementById('ratioBarB').style.width = `${percentB}%`;
-      document.getElementById('barLabelA').innerText = `${appState.partnerA} (${percentA}%)`;
-      document.getElementById('barLabelB').innerText = `${appState.partnerB} (${percentB}%)`;
+      document.getElementById("meterBarA").style.width = `${percentA}%`;
+      document.getElementById("meterBarB").style.width = `${percentB}%`;
+      document.getElementById("userAMeterLabel").innerText = `${state.userA}: ${percentA}% (${totalA.toLocaleString()}円)`;
+      document.getElementById("userBMeterLabel").innerText = `${state.userB}: ${percentB}% (${totalB.toLocaleString()}円)`;
 
-      // 精算アクション＆メッセージの生成
-      renderSettlement(totalA, totalB);
-
-      // もさおのアドバイス生成
-      updateMosaoComment(totalA, totalB);
-
-      // 履歴一覧の描画
-      renderHistoryList(filteredRecords);
-
-      // 現在のモード表示設定を再調整
-      switchMode(appState.mode);
-    }
-
-    // 当月のレコードを抽出
-    function getFilteredRecordsForCurrentMonth() {
-      const targetYear = appState.currentMonth.getFullYear();
-      const targetMonth = appState.currentMonth.getMonth(); // 0-11
-
-      return appState.records.filter(rec => {
-        const recDate = new Date(rec.date);
-        return recDate.getFullYear() === targetYear && recDate.getMonth() === targetMonth;
-      });
-    }
-
-    // --- 精算シミュレーター描画 ---
-    function renderSettlement(totalA, totalB) {
-      const container = document.getElementById('settlementActionContainer');
-      
-      if (totalA === 0 && totalB === 0) {
-        container.innerHTML = `
-          <div class="text-center font-bold text-stone-400 py-3">
-            <i class="fa-solid fa-cookie-bite text-2xl mb-1 block"></i>
-            支払いの記録がありませんもさ
-          </div>
-        `;
-        return;
-      }
+      // --- 精算金額計算 & もさおのセリフ変化 ---
+      const settleActionBox = document.getElementById("settleActionBox");
+      const papuComment = document.getElementById("papuComment");
 
       const diff = totalA - totalB;
-      const settlementAmount = Math.abs(diff) / 2;
+      const settleAmount = Math.abs(diff) / 2;
 
-      if (diff === 0) {
-        // ぴったり折半
-        container.innerHTML = `
-          <div class="text-center bg-emerald-50 text-emerald-800 border border-emerald-200 rounded-xl p-3 w-full">
-            <i class="fa-solid fa-star text-lg text-emerald-500 mb-1"></i>
-            <p class="font-black text-sm">現在ぴったり折半中！</p>
-            <p class="text-[10px] text-emerald-600 mt-0.5">追加の精算は不要ですもさ</p>
+      if (totalAmount === 0) {
+        settleActionBox.innerHTML = `<span class="text-gray-400 font-bold text-sm">今月のお買い物はまだないもさ🐾</span>`;
+        papuComment.innerText = "今月はまだお買い物の記録がないもさ！何か買ったら、「お買い物入力」タブから追加してねもさ🐾";
+      } else if (diff === 0) {
+        settleActionBox.innerHTML = `
+          <div class="text-[#5c8d70] font-black text-lg flex items-center justify-center gap-1.5">
+            <i class="fa-solid fa-circle-check"></i> 精算ゼロもさ！ ぴったり半分こもさ！
           </div>
         `;
+        papuComment.innerText = `すごいもさ！二人とも ${totalA.toLocaleString()}円 ずつ綺麗に折半できてるもさ。完璧なバランスもさ！🐾`;
       } else {
-        // 差額あり
-        const payerName = diff > 0 ? appState.partnerB : appState.partnerA; // 支払いが少なかった人
-        const receiverName = diff > 0 ? appState.partnerA : appState.partnerB; // 支払いが多かった人
+        const payerName = diff > 0 ? state.userB : state.userA;
+        const receiverName = diff > 0 ? state.userA : state.userB;
+        const arrow = diff > 0 
+          ? `<i class="fa-solid fa-arrow-right-long text-[#dca474] text-xl mx-2"></i>` 
+          : `<i class="fa-solid fa-arrow-left-long text-[#5c8d70] text-xl mx-2"></i>`;
 
-        container.innerHTML = `
-          <div class="flex flex-col items-center justify-center w-full">
-            <span class="text-[10px] font-black bg-stone-200 text-stone-700 px-2 py-0.5 rounded mb-2">
-              精算おねがい額
-            </span>
-            
-            <div class="text-xl font-black text-stone-800 tracking-tight flex items-baseline gap-0.5 mb-2">
-              <span class="text-rose-500 text-2xl">${Math.round(settlementAmount).toLocaleString()}</span>
-              <span class="text-xs text-stone-500">円</span>
-            </div>
-
-            <!-- 矢印グラフィック -->
-            <div class="flex items-center space-x-2 w-full justify-center px-2 py-1 bg-white border border-stone-200 rounded-xl shadow-sm">
-              <span class="text-xs font-black text-stone-700 max-w-[80px] truncate" title="${payerName}">${payerName}</span>
-              <div class="flex-grow flex items-center justify-center text-rose-400">
-                <span class="text-[10px] font-bold mr-1">支払う</span>
-                <i class="fa-solid fa-arrow-right-long animate-pulse"></i>
-              </div>
-              <span class="text-xs font-black text-stone-700 max-w-[80px] truncate" title="${receiverName}">${receiverName}</span>
-            </div>
+        settleActionBox.innerHTML = `
+          <div class="flex items-center justify-center gap-2 flex-wrap">
+            <span class="font-black text-gray-700">${payerName}</span>
+            ${arrow}
+            <span class="font-black text-gray-700">${receiverName} へ</span>
+            <span class="font-black text-red-500 text-2xl ml-2">${settleAmount.toLocaleString()}円</span>
+            <span class="text-xs text-gray-500 font-bold block w-full mt-1">をお支払いするもさ！</span>
           </div>
         `;
-      }
-    }
 
-    // --- もさおのアドバイス文 ---
-    function updateMosaoComment(totalA, totalB) {
-      const commentEl = document.getElementById('mosaoComment');
-      const diff = totalA - totalB;
-      const total = totalA + totalB;
-
-      if (total === 0) {
-        commentEl.innerText = "今月はまだお買い物の記録がないもさ。カレンダーと金額を入れて、下のボタンから登録するもさ！";
-        return;
-      }
-
-      const ratio = totalA / total;
-
-      if (diff === 0) {
-        commentEl.innerText = "す、すごいもさ！ふたりの支払いバランスが全く同じもさ！完璧なチームワークもさ、ご褒美に美味しいものでも食べるもさ？";
-      } else if (Math.abs(diff) < 1000) {
-        commentEl.innerText = "いい感じもさ！差額が1,000円以内でもさもさバランスを保っているもさ。このまま仲良くやりくりするもさ。";
-      } else if (ratio >= 0.7) {
-        commentEl.innerText = `${appState.partnerA}さんが全体の7割以上を支払っているもさ！少し負担が偏っているかもしれないもさ。${appState.partnerB}さん、美味しいコーヒーでも淹れて感謝を伝えるもさ。`;
-      } else if (ratio <= 0.3) {
-        commentEl.innerText = `${appState.partnerB}さんが全体の7割以上を支払っているもさ！少し負担が偏っているかもしれないもさ。${appState.partnerA}さん、肩でも叩いて「いつもありがとう」を伝えるチャンスもさ！`;
-      } else {
-        const leader = diff > 0 ? appState.partnerA : appState.partnerB;
-        commentEl.innerText = `今月は${leader}さんが少し多めに出してくれているもさ。月末にポチッと精算するか、今度は逆の人が出すとちょうどよくなるもさ〜。`;
-      }
-    }
-
-    // --- 履歴一覧描画 ---
-    function renderHistoryList(records) {
-      const container = document.getElementById('historyContainer');
-      container.innerHTML = '';
-
-      if (records.length === 0) {
-        container.innerHTML = `
-          <div class="flex flex-col items-center justify-center h-48 text-stone-400 font-bold">
-            <i class="fa-regular fa-folder-open text-3xl mb-2"></i>
-            この月のお買い物履歴はまだありません
-          </div>
-        `;
-        return;
-      }
-
-      // 並び替え処理 (デフォルト desc：新しい順)
-      const sorted = [...records].sort((a, b) => {
-        const dateA = new Date(a.date);
-        const dateB = new Date(b.date);
-        return appState.sortOrder === 'desc' ? dateB - dateA : dateA - dateB;
-      });
-
-      sorted.forEach(rec => {
-        const isPayeeA = rec.payee === 'A';
-        const payeeName = isPayeeA ? appState.partnerA : appState.partnerB;
-        
-        // 日付の曜日などの補正
-        const d = new Date(rec.date);
-        const dateStr = `${d.getMonth() + 1}/${d.getDate()}`;
-        const dayOfWeek = ["日", "月", "火", "水", "木", "金", "土"][d.getDay()];
-
-        // DOMの作成
-        const item = document.createElement('div');
-        item.className = `bg-white border-2 border-stone-800 rounded-xl p-3 mb-2 shadow-sm hover:shadow-md transition-shadow flex items-center justify-between gap-2 relative overflow-hidden`;
-        
-        // 支払者による左ボーダー色分け
-        if (isPayeeA) {
-          item.classList.add('border-l-8', 'border-l-amber-400');
+        // もさおのアドバイス
+        if (settleAmount < 1000) {
+          papuComment.innerText = `誤差はあとちょっと (${settleAmount.toLocaleString()}円) もさ！かなりきれいに揃っているもさ🐾この調子だもさ！`;
+        } else if (settleAmount >= 1000 && settleAmount < 10000) {
+          papuComment.innerText = `今は ${payerName} の方が少し多く立て替えている状態もさ。月末に ${settleAmount.toLocaleString()}円 を精算してスッキリしようもさ！🐾`;
         } else {
-          item.classList.add('border-l-8', 'border-l-emerald-400');
+          papuComment.innerText = `少し金額差がひらいてきたもさ！ ${payerName} から ${receiverName} へ ${settleAmount.toLocaleString()}円 精算して、お財布をまあるく元に戻そうもさ！🐕`;
         }
+      }
 
-        item.innerHTML = `
-          <div class="flex items-center space-x-3 min-w-0">
-            <!-- 日付表示 -->
-            <div class="text-center bg-stone-100 rounded-lg p-1.5 min-w-[45px] border border-stone-200">
-              <p class="text-[10px] font-black text-stone-400 leading-none mb-0.5">${dayOfWeek}</p>
-              <p class="text-xs font-black text-stone-700 leading-none">${dateStr}</p>
-            </div>
-            
-            <!-- メモ・支払者情報 -->
-            <div class="min-w-0">
-              <p class="text-xs font-black text-stone-800 truncate" title="${rec.memo || 'メモなし'}">
-                ${rec.memo || '<span class="text-stone-300 font-normal">メモなし</span>'}
-              </p>
-              <div class="flex items-center space-x-1.5 mt-0.5">
-                <span class="text-[9px] font-bold px-1.5 py-0.2 rounded-full ${isPayeeA ? 'bg-amber-100 text-amber-800' : 'bg-emerald-100 text-emerald-800'}">
-                  ${payeeName}
-                </span>
-              </div>
-            </div>
-          </div>
-
-          <!-- 金額 & アクションボタン -->
-          <div class="flex items-center space-x-2 flex-shrink-0">
-            <span class="font-black text-sm text-stone-800">
-              ¥${rec.amount.toLocaleString()}
-            </span>
-            
-            <!-- 操作メニュー -->
-            <div class="flex space-x-0.5">
-              <button onclick="startEditRecord('${rec.id}')" class="w-7 h-7 bg-stone-50 hover:bg-stone-100 border border-stone-300 rounded-lg flex items-center justify-center text-stone-500 hover:text-stone-800 transition-colors" title="編集">
-                <i class="fa-regular fa-pen-to-square text-xs"></i>
-              </button>
-              <button onclick="deleteRecordConfirm('${rec.id}')" class="w-7 h-7 bg-rose-50 hover:bg-rose-100 border border-rose-200 rounded-lg flex items-center justify-center text-rose-400 hover:text-rose-600 transition-colors" title="削除">
-                <i class="fa-regular fa-trash-can text-xs"></i>
-              </button>
-            </div>
+      // 6. 入力モードの「最近の履歴リスト」描画
+      const historyList = document.getElementById("historyList");
+      if (currentMonthRecords.length === 0) {
+        historyList.innerHTML = `
+          <div class="text-center py-10 text-gray-400 text-xs font-bold space-y-1">
+            <i class="fa-solid fa-leaf text-2xl text-[#ebdcd0] block mb-2"></i>
+            まだ今月のお買い物はありませんもさ
           </div>
         `;
-
-        container.appendChild(item);
-      });
-    }
-
-    // --- イベントハンドラー・登録/変更系 ---
-    
-    // 支払者セレクタボタンの選択状態切替
-    function selectPayee(payee) {
-      document.getElementById('inputPayee').value = payee;
-      const btnA = document.getElementById('btnPayeeA');
-      const btnB = document.getElementById('btnPayeeB');
-
-      if (payee === 'A') {
-        btnA.className = "py-2 px-3 border-2 border-amber-400 bg-amber-50 rounded-xl text-stone-800 font-black text-sm transition-all flex items-center justify-center gap-2";
-        btnB.className = "py-2 px-3 border-2 border-stone-200 bg-stone-50 rounded-xl text-stone-500 font-bold text-sm transition-all flex items-center justify-center gap-2";
       } else {
-        btnA.className = "py-2 px-3 border-2 border-stone-200 bg-stone-50 rounded-xl text-stone-500 font-bold text-sm transition-all flex items-center justify-center gap-2";
-        btnB.className = "py-2 px-3 border-2 border-emerald-400 bg-emerald-50 rounded-xl text-stone-800 font-black text-sm transition-all flex items-center justify-center gap-2";
+        historyList.innerHTML = currentMonthRecords.map(r => {
+          const userColor = r.user === "A" ? "bg-amber-100 text-amber-700" : "bg-emerald-100 text-emerald-700";
+          const userName = r.user === "A" ? state.userA : state.userB;
+          return `
+            <div class="flex justify-between items-center bg-[#fcfbf9] border border-[#e8dfd5] rounded-xl p-3 shadow-sm hover:shadow-md transition-shadow">
+              <div class="flex items-center gap-3">
+                <span class="text-[11px] font-bold text-gray-400">${r.date.substring(5)}</span>
+                <span class="px-2 py-0.5 text-[10px] font-black rounded-full ${userColor}">${userName}</span>
+                <span class="text-xs font-bold text-gray-700 max-w-[130px] truncate">${r.memo || "未記入"}</span>
+              </div>
+              <div class="flex items-center gap-3">
+                <span class="font-bold text-sm text-gray-800">${r.amount.toLocaleString()}円</span>
+                <button onclick="deleteRecord('${r.id}')" class="text-gray-300 hover:text-red-500 transition-colors p-1" title="削除">
+                  <i class="fa-solid fa-trash text-xs"></i>
+                </button>
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
+
+      // 7. 精算モードの「お買い物明細(全件)」描画
+      const fullHistoryList = document.getElementById("fullHistoryList");
+      if (currentMonthRecords.length === 0) {
+        fullHistoryList.innerHTML = `
+          <div class="text-center py-6 text-gray-400 text-xs font-bold">
+            明細はありませんもさ🐾
+          </div>
+        `;
+      } else {
+        fullHistoryList.innerHTML = currentMonthRecords.map(r => {
+          const userColor = r.user === "A" ? "border-[#dca474] text-amber-800" : "border-[#5c8d70] text-emerald-800";
+          const userName = r.user === "A" ? state.userA : state.userB;
+          return `
+            <div class="flex justify-between items-center bg-white border-l-4 ${userColor} rounded-r-xl p-3 border-y border-r border-[#e8dfd5] shadow-sm">
+              <div class="flex flex-col">
+                <span class="text-xs font-bold text-gray-700">${r.memo || "未記入"}</span>
+                <div class="flex items-center gap-2 mt-1">
+                  <span class="text-[10px] text-gray-400 font-bold">${r.date}</span>
+                  <span class="text-[10px] text-gray-400">•</span>
+                  <span class="text-[10px] font-black text-gray-500">${userName}の支払い</span>
+                </div>
+              </div>
+              <div class="flex items-center gap-3">
+                <span class="font-extrabold text-sm text-gray-800">${r.amount.toLocaleString()}円</span>
+                <button onclick="deleteRecord('${r.id}')" class="text-gray-300 hover:text-red-500 transition-colors p-1">
+                  <i class="fa-solid fa-trash text-xs"></i>
+                </button>
+              </div>
+            </div>
+          `;
+        }).join('');
       }
     }
 
-    // クイック金額入力補助
-    function adjustAmount(val) {
-      const input = document.getElementById('inputAmount');
-      let current = parseInt(input.value) || 0;
-      input.value = current + val;
+    // --- 各種操作ロジック ---
+
+    function switchMode(mode) {
+      state.currentMode = mode;
+      renderApp();
     }
 
-    // 金額クリア
+    function changeMonth(delta) {
+      state.currentMonth += delta;
+      if (state.currentMonth > 12) {
+        state.currentMonth = 1;
+        state.currentYear += 1;
+      } else if (state.currentMonth < 1) {
+        state.currentMonth = 12;
+        state.currentYear -= 1;
+      }
+      renderApp();
+    }
+
+    function addQuickAmount(add) {
+      const field = document.getElementById("fieldAmount");
+      const current = Number(field.value) || 0;
+      field.value = current + add;
+    }
+
     function clearAmount() {
-      document.getElementById('inputAmount').value = '';
+      document.getElementById("fieldAmount").value = "";
     }
 
-    // クイックカテゴリ入力
-    function setMemo(text) {
-      document.getElementById('inputMemo').value = text;
+    function setQuickMemo(memo) {
+      document.getElementById("fieldMemo").value = memo;
     }
 
-    // フォーム送信（新規・編集共通）
-    function handleFormSubmit(e) {
+    // データの保存
+    function saveRecord(e) {
       e.preventDefault();
+      const date = document.getElementById("fieldDate").value;
+      const user = document.querySelector('input[name="fieldUser"]:checked').value;
+      const amount = Number(document.getElementById("fieldAmount").value);
+      const memo = document.getElementById("fieldMemo").value.trim();
 
-      const editId = document.getElementById('editRecordId').value;
-      const date = document.getElementById('inputDate').value;
-      const payee = document.getElementById('inputPayee').value;
-      const amount = parseInt(document.getElementById('inputAmount').value) || 0;
-      const memo = document.getElementById('inputMemo').value.trim();
-
-      if (!date || amount <= 0) {
-        showCustomDialog("入力エラー", "日付と、1円以上の金額を正しく入力してくださいもさ。", "fa-triangle-exclamation", false);
+      if (!date || !amount || amount <= 0) {
+        showToast("正しい金額を入力してほしいもさ！🐾", "fa-circle-exclamation");
         return;
       }
 
-      if (editId) {
-        // 編集保存
-        const index = appState.records.findIndex(r => r.id === editId);
-        if (index !== -1) {
-          appState.records[index] = {
-            ...appState.records[index],
-            date,
-            payee,
-            amount,
-            memo
-          };
-        }
-        cancelEditState();
-      } else {
-        // 新規登録
-        const newRecord = {
-          id: 'rec-' + Date.now() + '-' + Math.random().toString(36).substr(2, 4),
-          date,
-          payee,
-          amount,
-          memo
-        };
-        appState.records.push(newRecord);
-
-        // 入力した日付が現在の表示月と違う場合、自動的にその月に表示を切り替える
-        const inputMonth = new Date(date);
-        if (inputMonth.getFullYear() !== appState.currentMonth.getFullYear() || inputMonth.getMonth() !== appState.currentMonth.getMonth()) {
-          appState.currentMonth = inputMonth;
-        }
-      }
-
-      // 保存・更新
-      saveRecordsToStorage();
-      updateUI();
-
-      // フォームの金額とメモ部分だけクリア（日付と支払者は連続入力しやすいように保持）
-      document.getElementById('inputAmount').value = '';
-      document.getElementById('inputMemo').value = '';
-    }
-
-    // 編集モードへの移行
-    function startEditRecord(id) {
-      const record = appState.records.find(r => r.id === id);
-      if (!record) return;
-
-      // フォームに入力値をセット
-      document.getElementById('editRecordId').value = record.id;
-      document.getElementById('inputDate').value = record.date;
-      selectPayee(record.payee);
-      document.getElementById('inputAmount').value = record.amount;
-      document.getElementById('inputMemo').value = record.memo;
-
-      // ボタンの見た目を更新
-      document.getElementById('submitBtnText').innerText = "変更を保存する";
-      document.getElementById('btnCancelEdit').classList.remove('hidden');
-      
-      // 入力フォームまでスクロール（モバイル向け）
-      document.getElementById('recordForm').scrollIntoView({ behavior: 'smooth' });
-    }
-
-    // 編集モードの解除
-    function cancelEditState() {
-      document.getElementById('editRecordId').value = '';
-      document.getElementById('submitBtnText').innerText = "この内容で登録する";
-      document.getElementById('btnCancelEdit').classList.add('hidden');
-      document.getElementById('inputAmount').value = '';
-      document.getElementById('inputMemo').value = '';
-      
-      // 日付を今日に戻す
-      const todayStr = new Date().toISOString().substring(0, 10);
-      document.getElementById('inputDate').value = todayStr;
-    }
-
-    // 削除確認
-    function deleteRecordConfirm(id) {
-      const rec = appState.records.find(r => r.id === id);
-      if (!rec) return;
-
-      const payerName = rec.payee === 'A' ? appState.partnerA : appState.partnerB;
-      const message = `${rec.date} の「${rec.memo || 'メモなし'}」 (¥${rec.amount.toLocaleString()}) を削除してもよろしいですかもさ？`;
-
-      showCustomDialog("データの削除確認", message, "fa-trash-can", true, () => {
-        appState.records = appState.records.filter(r => r.id !== id);
-        saveRecordsToStorage();
-        // 編集中のものを消した場合は編集モードを解除
-        if (document.getElementById('editRecordId').value === id) {
-          cancelEditState();
-        }
-        updateUI();
-        closeCustomDialog();
-      });
-    }
-
-    // --- 月切替処理 ---
-    function changeMonth(diff) {
-      const year = appState.currentMonth.getFullYear();
-      const month = appState.currentMonth.getMonth();
-      
-      appState.currentMonth = new Date(year, month + diff, 1);
-      cancelEditState();
-      updateUI();
-    }
-
-    // 今月に戻す
-    function setToCurrentMonth() {
-      appState.currentMonth = new Date();
-      cancelEditState();
-      updateUI();
-    }
-
-    // ソート順の変更
-    function toggleSortOrder() {
-      appState.sortOrder = appState.sortOrder === 'desc' ? 'asc' : 'desc';
-      const btn = document.getElementById('btnSortOrder');
-      if (appState.sortOrder === 'desc') {
-        btn.innerHTML = '日付の新しい順 <i class="fa-solid fa-arrow-down-short-wide ml-0.5"></i>';
-      } else {
-        btn.innerHTML = '日付の古い順 <i class="fa-solid fa-arrow-up-wide-short ml-0.5"></i>';
-      }
-      updateUI();
-    }
-
-    // --- 設定（パートナー名）関連 ---
-    function openConfigModal() {
-      document.getElementById('configPartnerA').value = appState.partnerA;
-      document.getElementById('configPartnerB').value = appState.partnerB;
-
-      const modal = document.getElementById('configModal');
-      const body = document.getElementById('configModalBody');
-      modal.classList.remove('pointer-events-none', 'opacity-0');
-      body.classList.remove('scale-95');
-    }
-
-    function closeConfigModal() {
-      const modal = document.getElementById('configModal');
-      const body = document.getElementById('configModalBody');
-      modal.classList.add('pointer-events-none', 'opacity-0');
-      body.classList.add('scale-95');
-    }
-
-    function saveConfig() {
-      const nameA = document.getElementById('configPartnerA').value.trim() || "ユーザーA";
-      const nameB = document.getElementById('configPartnerB').value.trim() || "ユーザーB";
-
-      appState.partnerA = nameA;
-      appState.partnerB = nameB;
-
-      saveConfigToStorage();
-      updateUI();
-      closeConfigModal();
-    }
-
-    // --- データのインポート・エクスポート（2人での共有・バックアップ用） ---
-    function exportData() {
-      const data = {
-        records: appState.records,
-        partnerA: appState.partnerA,
-        partnerB: appState.partnerB
+      const newRecord = {
+        id: crypto.randomUUID(),
+        date: date,
+        user: user,
+        amount: amount,
+        memo: memo || "お買い物"
       };
-      const jsonStr = JSON.stringify(data);
-      
-      const tempTextArea = document.createElement('textarea');
-      tempTextArea.value = jsonStr;
-      document.body.appendChild(tempTextArea);
-      tempTextArea.select();
-      try {
-        document.execCommand('copy');
-        showCustomDialog("書き出し成功", "データをクリップボードにコピーしましたもさ！LINEやメールでパートナーに送って共有してね。", "fa-circle-check", false);
-      } catch (err) {
-        showCustomDialog("エラー", "コピーに失敗しました。手動でコピーしてくださいもさ。", "fa-triangle-exclamation", false);
-      }
-      document.body.removeChild(tempTextArea);
+
+      state.records.push(newRecord);
+      saveToStorage();
+      renderApp();
+
+      document.getElementById("fieldAmount").value = "";
+      document.getElementById("fieldMemo").value = "";
+
+      showToast("記録を保存したもさ！🐾", "fa-circle-check");
     }
 
-    function openImportArea() {
-      const area = document.getElementById('importArea');
-      area.classList.toggle('hidden');
+    // 履歴の削除
+    function deleteRecord(id) {
+      showConfirm("本当にこの履歴を削除するもさ？🐾", () => {
+        state.records = state.records.filter(r => r.id !== id);
+        saveToStorage();
+        renderApp();
+        showToast("削除したもさ！🐾", "fa-circle-check");
+      });
     }
 
-    function importData() {
-      const jsonStr = document.getElementById('importJsonText').value.trim();
-      if (!jsonStr) {
-        showCustomDialog("インポートエラー", "データが入力されていませんもさ。", "fa-triangle-exclamation", false);
+    // --- パートナー＆データ同期設定の管理 ---
+
+    function openSettings() {
+      document.getElementById("settingsModal").classList.remove("hidden");
+    }
+
+    function closeSettings() {
+      document.getElementById("settingsModal").classList.add("hidden");
+    }
+
+    function savePartnerNames() {
+      const nameA = document.getElementById("configUserA").value.trim();
+      const nameB = document.getElementById("configUserB").value.trim();
+
+      if (!nameA || !nameB) {
+        showToast("お名前は空欄にできないもさ🐾", "fa-circle-exclamation");
         return;
       }
-      
-      try {
-        const parsed = JSON.parse(jsonStr);
-        if (parsed && Array.isArray(parsed.records)) {
-          appState.records = parsed.records;
-          if (parsed.partnerA) appState.partnerA = parsed.partnerA;
-          if (parsed.partnerB) appState.partnerB = parsed.partnerB;
-          
-          saveRecordsToStorage();
-          saveConfigToStorage();
-          updateUI();
-          
-          document.getElementById('importJsonText').value = '';
-          document.getElementById('importArea').classList.add('hidden');
-          closeConfigModal();
-          
-          showCustomDialog("読み込み成功", "データの復元・同期が完了しましたもさ！", "fa-circle-check", false);
-        } else {
-          showCustomDialog("フォーマットエラー", "データの形式が正しくありませんもさ。", "fa-triangle-exclamation", false);
-        }
-      } catch (e) {
-        showCustomDialog("解析エラー", "データの解析に失敗しました。正しいデータを貼り付けてくださいもさ。", "fa-triangle-exclamation", false);
-      }
+
+      state.userA = nameA;
+      state.userB = nameB;
+      saveToStorage();
+      renderApp();
+      showToast("お名前を更新したもさ🐾", "fa-circle-check");
     }
 
-    // --- 全データリセット処理 ---
-    function clearAllDataConfirm() {
-      showCustomDialog(
-        "データのリセット確認", 
-        "これまでに登録されたすべての支払履歴データが削除されます。元に戻すことはできません。リセットしてもよろしいですかもさ？", 
-        "fa-triangle-exclamation", 
-        true, 
-        () => {
-          appState.records = [];
-          saveRecordsToStorage();
-          cancelEditState();
-          updateUI();
-          closeCustomDialog();
-        }
-      );
-    }
-
-    // --- カスタムダイアログ管理（不快なブラウザalert撲滅） ---
-    function showCustomDialog(title, message, iconClass, showCancel, confirmCallback) {
-      document.getElementById('dialogTitle').innerText = title;
-      document.getElementById('dialogMessage').innerText = message;
-      
-      const iconEl = document.getElementById('dialogIcon');
-      iconEl.className = `fa-solid ${iconClass || 'fa-triangle-exclamation'} text-lg`;
-      
-      const cancelBtn = document.getElementById('dialogCancelBtn');
-      if (showCancel) {
-        cancelBtn.classList.remove('hidden');
-      } else {
-        cancelBtn.classList.add('hidden');
-      }
-
-      // 決定ボタンのイベント紐付け
-      const confirmBtn = document.getElementById('dialogConfirmBtn');
-      // クローンして以前のイベントリスナーを破棄
-      const newConfirmBtn = confirmBtn.cloneNode(true);
-      confirmBtn.parentNode.replaceChild(newConfirmBtn, confirmBtn);
-
-      newConfirmBtn.addEventListener('click', () => {
-        if (confirmCallback) {
-          confirmCallback();
-        } else {
-          closeCustomDialog();
-        }
+    // 今月分だけのデータ書き出し
+    function exportCurrentMonthData() {
+      const currentMonthRecords = state.records.filter(r => {
+        const [y, m] = r.date.split("-").map(Number);
+        return y === state.currentYear && m === state.currentMonth;
       });
 
-      const dialog = document.getElementById('customDialog');
-      const body = document.getElementById('customDialogBody');
-      dialog.classList.remove('pointer-events-none', 'opacity-0');
-      body.classList.remove('scale-95');
+      const patchData = {
+        type: "month_patch",
+        year: state.currentYear,
+        month: state.currentMonth,
+        userA: state.userA,
+        userB: state.userB,
+        records: currentMonthRecords
+      };
+
+      const jsonStr = JSON.stringify(patchData);
+      copyToClipboard(jsonStr);
+      showToast("今月の同期データをコピーしたもさ！LINEへ貼り付けてほしいもさ🐾", "fa-circle-check");
     }
 
-    function closeCustomDialog() {
-      const dialog = document.getElementById('customDialog');
-      const body = document.getElementById('customDialogBody');
-      dialog.classList.add('pointer-events-none', 'opacity-0');
-      body.classList.add('scale-95');
+    // 全データ（過去ログ含む）の書き出し
+    function exportAllData() {
+      const allData = {
+        userA: state.userA,
+        userB: state.userB,
+        records: state.records
+      };
+      const jsonStr = JSON.stringify(allData);
+      copyToClipboard(jsonStr);
+      showToast("全データをコピーしたもさ！フルバックアップにどうぞ🐾", "fa-circle-check");
     }
 
+    // データ読み込み（差分マージ or 完全上書き）
+    function importData(isOverwrite = false) {
+      const text = document.getElementById("importTextarea").value.trim();
+      if (!text) {
+        showToast("データを貼り付けてほしいもさ🐾", "fa-circle-exclamation");
+        return;
+      }
+
+      try {
+        const parsed = JSON.parse(text);
+
+        if (parsed.type === "month_patch") {
+          const { year, month, userA, userB, records } = parsed;
+          
+          if (!year || !month || !Array.isArray(records)) {
+            throw new Error("パッチデータの形式が不正です。");
+          }
+
+          if (isOverwrite) {
+            state.records = state.records.filter(r => {
+              const [y, m] = r.date.split("-").map(Number);
+              return !(y === year && m === month);
+            });
+            state.records.push(...records);
+          } else {
+            const existingMap = new Map(state.records.map(r => [r.id, r]));
+            records.forEach(newRec => {
+              existingMap.set(newRec.id, newRec);
+            });
+            state.records = Array.from(existingMap.values());
+          }
+
+          if (userA) state.userA = userA;
+          if (userB) state.userB = userB;
+
+          state.currentYear = year;
+          state.currentMonth = month;
+
+          showToast(`${year}年${month}月のデータを読み込んで同期したもさ！🐾`, "fa-circle-check");
+
+        } else {
+          if (!parsed.records || !Array.isArray(parsed.records)) {
+            throw new Error("フルデータの形式が不正です。");
+          }
+
+          if (isOverwrite) {
+            state.userA = parsed.userA || state.userA;
+            state.userB = parsed.userB || state.userB;
+            state.records = parsed.records;
+          } else {
+            const existingMap = new Map(state.records.map(r => [r.id, r]));
+            parsed.records.forEach(newRec => {
+              existingMap.set(newRec.id, newRec);
+            });
+            state.records = Array.from(existingMap.values());
+            state.userA = parsed.userA || state.userA;
+            state.userB = parsed.userB || state.userB;
+          }
+          showToast("全てのデータを同期・マージしたもさ🐾", "fa-circle-check");
+        }
+
+        saveToStorage();
+        renderApp();
+        document.getElementById("importTextarea").value = "";
+        closeSettings();
+
+      } catch (e) {
+        console.error(e);
+        showToast("データの形式がちがうみたいもさ。正しくコピーできているか確認してね🐾", "fa-triangle-exclamation");
+      }
+    }
+
+    function confirmReset() {
+      showConfirm("本当に全てのデータを完全に削除するもさ？この操作は戻せないもさ🐾", () => {
+        localStorage.removeItem("papu_ledger_data");
+        state.records = [];
+        state.userA = "ユーザーA";
+        state.userB = "ユーザーB";
+        saveToStorage();
+        renderApp();
+        closeSettings();
+        showToast("初期化したもさ。新しくスタートだもさ🐾", "fa-circle-check");
+      });
+    }
+
+    function copyToClipboard(text) {
+      const textarea = document.createElement("textarea");
+      textarea.value = text;
+      textarea.style.position = "fixed";
+      textarea.style.opacity = "0";
+      document.body.appendChild(textarea);
+      textarea.select();
+      try {
+        document.execCommand("copy");
+      } catch (err) {
+        console.error("コピーに失敗しました", err);
+      }
+      document.body.removeChild(textarea);
+    }
+
+    // --- カスタム通知＆ダイアログUI ---
+
+    function showToast(message, iconClass = "fa-circle-info") {
+      const toast = document.getElementById("toastMessage");
+      const icon = document.getElementById("toastIcon");
+      const text = document.getElementById("toastText");
+
+      icon.className = `fa-solid ${iconClass}`;
+      text.innerText = message;
+
+      toast.classList.remove("translate-y-12", "opacity-0");
+      toast.classList.add("translate-y-0", "opacity-100");
+
+      setTimeout(() => {
+        toast.classList.remove("translate-y-0", "opacity-100");
+        toast.classList.add("translate-y-12", "opacity-0");
+      }, 4000);
+    }
+
+    function showConfirm(message, onConfirm) {
+      const dialog = document.getElementById("customDialog");
+      document.getElementById("dialogTitle").innerText = "もさおからの確認";
+      document.getElementById("dialogMessage").innerText = message;
+      document.getElementById("dialogIcon").className = "fa-solid fa-circle-question";
+
+      const buttonsBox = document.getElementById("dialogButtons");
+      buttonsBox.innerHTML = `
+        <button id="btnCancel" class="flex-1 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-600 font-bold text-sm rounded-xl transition-colors">
+          やめる
+        </button>
+        <button id="btnConfirm" class="flex-1 py-2.5 bg-[#5c8d70] hover:bg-[#4a735b] text-white font-bold text-sm rounded-xl transition-colors">
+          OKもさ！
+        </button>
+      `;
+
+      dialog.classList.remove("hidden");
+
+      document.getElementById("btnCancel").onclick = () => {
+        dialog.classList.add("hidden");
+      };
+
+      document.getElementById("btnConfirm").onclick = () => {
+        dialog.classList.add("hidden");
+        onConfirm();
+      };
+    }
   </script>
 </body>
 </html>
