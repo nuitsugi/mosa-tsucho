@@ -26,7 +26,7 @@
     .float-animation {
       animation: float 4s ease-in-out infinite;
     }
-    /* カスタムスクールバー */
+    /* カスタムスクロールバー */
     ::-webkit-scrollbar {
       width: 6px;
     }
@@ -81,7 +81,7 @@
       <div class="flex items-center space-x-2">
         <button onclick="openConfigModal()" class="bg-white hover:bg-stone-50 border-2 border-stone-800 text-stone-800 font-bold py-2 px-3 rounded-xl shadow-sm text-sm transition-transform active:scale-95 flex items-center gap-1">
           <i class="fa-solid fa-user-gear"></i>
-          <span class="hidden md:inline">パートナー設定</span>
+          <span class="hidden md:inline">パートナー・同期設定</span>
         </button>
       </div>
     </div>
@@ -204,7 +204,7 @@
     <!-- 2カラムコンテンツエリア -->
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
       
-      <!-- 左：入力フォーム (4カラム分) -->
+      <!-- 左：入力フォーム (5カラム分) -->
       <div id="formContainer" class="lg:col-span-5 flex flex-col">
         <div class="bg-white border-4 border-stone-800 rounded-3xl p-6 shadow-[5px_5px_0px_0px_rgba(68,64,60,1)] flex-grow">
           <!-- 月切替（入力モード時にもカレンダー確認できるように月情報をフォーム近くに配置） -->
@@ -279,11 +279,11 @@
               <input type="text" id="inputMemo" placeholder="例: スーパー、電気代、ランチなど" class="w-full bg-stone-50 border-2 border-stone-300 rounded-xl px-4 py-2.5 font-bold text-stone-800 focus:outline-none focus:border-stone-800 transition-colors text-sm">
               <!-- クイックカテゴリ -->
               <div class="flex flex-wrap gap-1 mt-2">
-                <button type="button" onclick="setMemo('食費')" class="text-[10px] bg-stone-100 hover:bg-stone-200 border border-stone-300 px-2.5 py-1 rounded-md text-stone-600 font-bold">🛒 食費</button>
-                <button type="button" onclick="setMemo('日用品')" class="text-[10px] bg-stone-100 hover:bg-stone-200 border border-stone-300 px-2.5 py-1 rounded-md text-stone-600 font-bold">🧼 日用品</button>
-                <button type="button" onclick="setMemo('光熱費')" class="text-[10px] bg-stone-100 hover:bg-stone-200 border border-stone-300 px-2.5 py-1 rounded-md text-stone-600 font-bold">⚡ 光熱費</button>
-                <button type="button" onclick="setMemo('外食')" class="text-[10px] bg-stone-100 hover:bg-stone-200 border border-stone-300 px-2.5 py-1 rounded-md text-stone-600 font-bold">🍕 外食</button>
-                <button type="button" onclick="setMemo('家賃')" class="text-[10px] bg-stone-100 hover:bg-stone-200 border border-stone-300 px-2.5 py-1 rounded-md text-stone-600 font-bold">🏠 家賃</button>
+                <button type="button" onclick="setMemo('食費🛒')" class="text-[10px] bg-stone-100 hover:bg-stone-200 border border-stone-300 px-2.5 py-1 rounded-md text-stone-600 font-bold">🛒 食費</button>
+                <button type="button" onclick="setMemo('日用品🧼')" class="text-[10px] bg-stone-100 hover:bg-stone-200 border border-stone-300 px-2.5 py-1 rounded-md text-stone-600 font-bold">🧼 日用品</button>
+                <button type="button" onclick="setMemo('光熱費⚡')" class="text-[10px] bg-stone-100 hover:bg-stone-200 border border-stone-300 px-2.5 py-1 rounded-md text-stone-600 font-bold">⚡ 光熱費</button>
+                <button type="button" onclick="setMemo('外食🍕')" class="text-[10px] bg-stone-100 hover:bg-stone-200 border border-stone-300 px-2.5 py-1 rounded-md text-stone-600 font-bold">🍕 外食</button>
+                <button type="button" onclick="setMemo('家賃🏠')" class="text-[10px] bg-stone-100 hover:bg-stone-200 border border-stone-300 px-2.5 py-1 rounded-md text-stone-600 font-bold">🏠 家賃</button>
               </div>
             </div>
 
@@ -371,7 +371,7 @@
 
   <!-- モーダル: パートナー設定 -->
   <div id="configModal" class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300 px-4">
-    <div class="bg-white border-4 border-stone-800 rounded-3xl max-w-sm w-full p-6 shadow-2xl transform scale-95 transition-transform duration-300 overflow-y-auto max-h-[90vh]" id="configModalBody">
+    <div class="bg-white border-4 border-stone-800 rounded-3xl max-w-md w-full p-6 shadow-2xl transform scale-95 transition-transform duration-300 overflow-y-auto max-h-[90vh]" id="configModalBody">
       <div class="flex justify-between items-center mb-4 pb-2 border-b-2 border-dashed border-stone-100">
         <h3 class="text-lg font-black text-stone-800 flex items-center gap-2">
           <i class="fa-solid fa-user-gear text-[#c3b091]"></i>
@@ -395,20 +395,55 @@
           ※名前を変更すると、画面上のすべての表記が設定した名前に更新されます。
         </div>
 
-        <!-- データのバックアップ・共有セクション -->
+        <!-- データのバックアップ・共有セクション（スマート化対応） -->
         <div class="border-t-2 border-dashed border-stone-200 pt-4">
-          <label class="block text-xs font-black text-stone-600 mb-1">データのバックアップ・共有</label>
-          <div class="grid grid-cols-2 gap-2">
-            <button onclick="exportData()" class="bg-stone-100 hover:bg-stone-200 border border-stone-400 text-stone-700 font-bold py-2 px-3 rounded-xl text-xs transition-transform active:scale-95 flex items-center justify-center gap-1">
-              <i class="fa-solid fa-copy"></i> コピーして書き出し
-            </button>
-            <button onclick="openImportArea()" class="bg-stone-100 hover:bg-stone-200 border border-stone-400 text-stone-700 font-bold py-2 px-3 rounded-xl text-xs transition-transform active:scale-95 flex items-center justify-center gap-1">
-              <i class="fa-solid fa-file-import"></i> データを読み込み
+          <label class="block text-xs font-black text-stone-600 mb-1">データのバックアップ・同期</label>
+          
+          <div class="space-y-2 mt-2">
+            <!-- 【追加】今月分だけのスマート書き出し -->
+            <div class="bg-amber-50/50 p-2.5 rounded-xl border border-amber-200">
+              <span class="bg-amber-500 text-white text-[9px] font-bold px-1.5 py-0.5 rounded mr-1">おすすめ</span>
+              <p class="text-[10px] text-stone-600 font-semibold mb-1.5 leading-relaxed">
+                <strong>今月分（選択中）だけ</strong>のデータをコピーします。文字数が短く、普段のLINE共有に最も適していますもさ🐾
+              </p>
+              <button onclick="exportCurrentMonthData()" class="w-full bg-[#ebdcb9] hover:bg-[#d8c8a1] border border-stone-800 text-stone-800 font-black py-2 px-3 rounded-xl text-xs transition-transform active:scale-95 flex items-center justify-center gap-1.5 shadow-sm">
+                <i class="fa-solid fa-copy"></i> 今月のデータだけコピー (短いコード)
+              </button>
+            </div>
+
+            <!-- 全体のフルバックアップ用 -->
+            <div class="bg-stone-50 p-2.5 rounded-xl border border-stone-200">
+              <p class="text-[10px] text-stone-500 font-semibold mb-1.5 leading-relaxed">
+                過去すべてを含めたフルデータをコピーします。（データの完全移行・予備の保管用もさ）
+              </p>
+              <button onclick="exportAllData()" class="w-full bg-stone-700 hover:bg-stone-800 text-white font-bold py-2 px-3 rounded-xl text-xs transition-transform active:scale-95 flex items-center justify-center gap-1.5 shadow-sm">
+                <i class="fa-solid fa-file-export"></i> 全てのデータをコピー (長いコード)
+              </button>
+            </div>
+
+            <!-- 読み込みエリアボタン -->
+            <button onclick="openImportArea()" class="w-full bg-white hover:bg-stone-50 border-2 border-stone-800 text-stone-800 font-bold py-2 px-3 rounded-xl text-xs transition-transform active:scale-95 flex items-center justify-center gap-1 shadow-sm">
+              <i class="fa-solid fa-file-import"></i> 相手からのデータを読み込み
             </button>
           </div>
-          <div id="importArea" class="hidden mt-2 space-y-2">
-            <textarea id="importJsonText" placeholder="ここにコピーしたデータを貼り付けてください" class="w-full h-20 bg-stone-50 border border-stone-300 rounded-lg p-2 text-xs font-mono focus:outline-none"></textarea>
-            <button onclick="importData()" class="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-1.5 rounded-lg text-xs transition-transform active:scale-95">読み込みを実行</button>
+
+          <!-- 読み込みテキスト展開エリア -->
+          <div id="importArea" class="hidden mt-3 space-y-2 bg-stone-50 p-3 rounded-xl border border-stone-300">
+            <p class="text-[10px] text-stone-500 font-bold">送られてきたコードを貼り付けてくださいもさ：</p>
+            <textarea id="importJsonText" placeholder='{"type":"month_patch"... または {"records":...' class="w-full h-20 bg-white border border-stone-300 rounded-lg p-2 text-xs font-mono focus:outline-none"></textarea>
+            
+            <div class="grid grid-cols-2 gap-2">
+              <button onclick="importData(false)" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 rounded-xl text-[10px] transition-transform active:scale-95">
+                差分をマージして追加
+              </button>
+              <button onclick="importData(true)" class="bg-rose-50 hover:bg-rose-100 text-rose-600 border border-rose-200 font-bold py-2 rounded-xl text-[10px] transition-transform active:scale-95">
+                全て上書きで読み込み
+              </button>
+            </div>
+            <p class="text-[9px] text-stone-400 leading-normal">
+              ※「マージ」は相手の最新データだけを合流させ、既存の過去データは残します。<br>
+              ※「すべて上書き」は貼り付けたデータで完全にアプリ内を置き換えます。
+            </p>
           </div>
         </div>
       </div>
@@ -444,6 +479,12 @@
         </button>
       </div>
     </div>
+  </div>
+
+  <!-- トーストメッセージ -->
+  <div id="toastMessage" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-[100] bg-stone-900 text-[#ebdcb9] px-5 py-3 rounded-full text-xs font-bold shadow-lg flex items-center gap-2 transform translate-y-12 opacity-0 pointer-events-none transition-all duration-300">
+    <i id="toastIcon" class="fa-solid fa-circle-info text-amber-400"></i>
+    <span id="toastText">メッセージ</span>
   </div>
 
   <!-- アプリケーション ロジック -->
@@ -519,8 +560,14 @@
       }
 
       // 3. 入力フォームの日付を本日に設定
-      const todayStr = new Date().toISOString().substring(0, 10);
-      document.getElementById('inputDate').value = todayStr;
+      const today = new Date();
+      const yearStr = today.getFullYear();
+      const monthStr = String(today.getMonth() + 1).padStart(2, '0');
+      const dayStr = String(today.getDate()).padStart(2, '0');
+      document.getElementById('inputDate').value = `${yearStr}-${monthStr}-${dayStr}`;
+
+      // 表示月を本日に設定
+      appState.currentMonth = today;
 
       // 4. モードを初期の'input'に切り替え
       switchMode('input');
@@ -581,6 +628,7 @@
         tabInput.className = "px-6 py-2.5 rounded-xl font-bold text-sm flex items-center gap-2 transition-all duration-200 text-stone-500 hover:text-stone-800 hover:bg-stone-200/50";
         tabSettle.className = "px-6 py-2.5 rounded-xl font-black text-sm flex items-center gap-2 transition-all duration-200 bg-[#c3b091] text-stone-800 border-2 border-stone-800 shadow-[2px_2px_0px_0px_rgba(68,64,60,1)]";
       }
+      updateUI();
     }
 
     // --- UI更新処理メイン ---
@@ -595,244 +643,200 @@
 
       // 表示中の月のラベル更新 (YYYY年 MM月)
       const year = appState.currentMonth.getFullYear();
-      const month = appState.currentMonth.getMonth(); // 0-indexed
-      document.getElementById('currentMonthLabel').innerText = `${year}年 ${month + 1}月`;
-      document.getElementById('inputMonthBadge').innerText = `${month + 1}月度`;
+      const month = appState.currentMonth.getMonth() + 1;
+      document.getElementById('currentMonthLabel').innerText = `${year}年 ${month}月`;
+      document.getElementById('inputMonthBadge').innerText = `${month}月度`;
 
-      // 当当月のレコードのみ抽出
-      const filteredRecords = getFilteredRecordsForCurrentMonth();
-      
-      // レコード件数
-      document.getElementById('recordCount').innerText = filteredRecords.length;
+      // 当月データのフィルタリング
+      const currentMonthRecords = appState.records.filter(r => {
+        const [rYear, rMonth] = r.date.split("-").map(Number);
+        return rYear === year && rMonth === month;
+      });
 
-      // 合計金額の計算
+      // 登録件数
+      document.getElementById('recordCount').innerText = currentMonthRecords.length;
+
+      // 各自の合計金額算出
       let totalA = 0;
       let totalB = 0;
-
-      filteredRecords.forEach(rec => {
-        if (rec.payee === 'A') {
-          totalA += rec.amount;
-        } else if (rec.payee === 'B') {
-          totalB += rec.amount;
-        }
+      currentMonthRecords.forEach(r => {
+        if (r.payee === 'A') totalA += r.amount;
+        if (r.payee === 'B') totalB += r.amount;
       });
 
       const grandTotal = totalA + totalB;
-      const halfAmount = Math.round(grandTotal / 2);
+      const halfAmount = grandTotal / 2;
 
-      // DOMに数値を流し込み
       document.getElementById('partnerATotal').innerText = totalA.toLocaleString();
       document.getElementById('partnerBTotal').innerText = totalB.toLocaleString();
       document.getElementById('grandTotal').innerText = grandTotal.toLocaleString();
       document.getElementById('halfAmount').innerText = halfAmount.toLocaleString();
 
-      // 比率バーの計算 & 更新
-      let percentA = 50;
-      let percentB = 50;
-      if (grandTotal > 0) {
-        percentA = Math.round((totalA / grandTotal) * 100);
-        percentB = 100 - percentA;
+      // 比率メーターの更新
+      const ratioBarA = document.getElementById('ratioBarA');
+      const ratioBarB = document.getElementById('ratioBarB');
+      if (grandTotal === 0) {
+        ratioBarA.style.width = '50%';
+        ratioBarB.style.width = '50%';
+        document.getElementById('barLabelA').innerText = `${appState.partnerA} (50%)`;
+        document.getElementById('barLabelB').innerText = `${appState.partnerB} (50%)`;
+      } else {
+        const percentA = Math.round((totalA / grandTotal) * 100);
+        const percentB = 100 - percentA;
+        ratioBarA.style.width = `${percentA}%`;
+        ratioBarB.style.width = `${percentB}%`;
+        document.getElementById('barLabelA').innerText = `${appState.partnerA} (${percentA}%)`;
+        document.getElementById('barLabelB').innerText = `${appState.partnerB} (${percentB}%)`;
       }
-      document.getElementById('ratioBarA').style.width = `${percentA}%`;
-      document.getElementById('ratioBarB').style.width = `${percentB}%`;
-      document.getElementById('barLabelA').innerText = `${appState.partnerA} (${percentA}%)`;
-      document.getElementById('barLabelB').innerText = `${appState.partnerB} (${percentB}%)`;
 
-      // 精算アクション＆メッセージの生成
-      renderSettlement(totalA, totalB);
+      // 精算ビジュアル・シミュレーションの更新
+      const settlementActionContainer = document.getElementById('settlementActionContainer');
+      const diff = totalA - totalB;
+      const settleAmount = Math.abs(diff) / 2;
 
-      // もさおのアドバイス生成
-      updateMosaoComment(totalA, totalB);
-
-      // 履歴一覧の描画
-      renderHistoryList(filteredRecords);
-
-      // 現在のモード表示設定を再調整
-      switchMode(appState.mode);
-    }
-
-    // 当月のレコードを抽出
-    function getFilteredRecordsForCurrentMonth() {
-      const targetYear = appState.currentMonth.getFullYear();
-      const targetMonth = appState.currentMonth.getMonth(); // 0-11
-
-      return appState.records.filter(rec => {
-        const recDate = new Date(rec.date);
-        return recDate.getFullYear() === targetYear && recDate.getMonth() === targetMonth;
-      });
-    }
-
-    // --- 精算シミュレーター描画 ---
-    function renderSettlement(totalA, totalB) {
-      const container = document.getElementById('settlementActionContainer');
-      
-      if (totalA === 0 && totalB === 0) {
-        container.innerHTML = `
-          <div class="text-center font-bold text-stone-400 py-3">
-            <i class="fa-solid fa-cookie-bite text-2xl mb-1 block"></i>
-            支払いの記録がありませんもさ
+      if (grandTotal === 0) {
+        settlementActionContainer.innerHTML = `
+          <div class="text-center font-bold text-stone-500 py-2">
+            今月のお買い物データはまだありませんもさ🐾
           </div>
         `;
-        return;
-      }
-
-      const diff = totalA - totalB;
-      const settlementAmount = Math.abs(diff) / 2;
-
-      if (diff === 0) {
-        // ぴったり折半
-        container.innerHTML = `
-          <div class="text-center bg-emerald-50 text-emerald-800 border border-emerald-200 rounded-xl p-3 w-full">
-            <i class="fa-solid fa-star text-lg text-emerald-500 mb-1"></i>
-            <p class="font-black text-sm">現在ぴったり折半中！</p>
-            <p class="text-[10px] text-emerald-600 mt-0.5">追加の精算は不要ですもさ</p>
+      } else if (diff === 0) {
+        settlementActionContainer.innerHTML = `
+          <div class="text-center font-bold text-emerald-600 py-1 flex flex-col items-center">
+            <i class="fa-solid fa-circle-check text-2xl mb-1"></i>
+            <span>ぴったり折半できてますもさ！</span>
+            <span class="text-xs text-stone-500 font-semibold mt-1">追加のやりとりは不要もさ🐾</span>
           </div>
         `;
       } else {
-        // 差額あり
-        const payerName = diff > 0 ? appState.partnerB : appState.partnerA; // 支払いが少なかった人
-        const receiverName = diff > 0 ? appState.partnerA : appState.partnerB; // 支払いが多かった人
-
-        container.innerHTML = `
-          <div class="flex flex-col items-center justify-center w-full">
-            <span class="text-[10px] font-black bg-stone-200 text-stone-700 px-2 py-0.5 rounded mb-2">
-              精算おねがい額
-            </span>
-            
-            <div class="text-xl font-black text-stone-800 tracking-tight flex items-baseline gap-0.5 mb-2">
-              <span class="text-rose-500 text-2xl">${Math.round(settlementAmount).toLocaleString()}</span>
-              <span class="text-xs text-stone-500">円</span>
-            </div>
-
-            <!-- 矢印グラフィック -->
-            <div class="flex items-center space-x-2 w-full justify-center px-2 py-1 bg-white border border-stone-200 rounded-xl shadow-sm">
-              <span class="text-xs font-black text-stone-700 max-w-[80px] truncate" title="${payerName}">${payerName}</span>
-              <div class="flex-grow flex items-center justify-center text-rose-400">
-                <span class="text-[10px] font-bold mr-1">支払う</span>
-                <i class="fa-solid fa-arrow-right-long animate-pulse"></i>
-              </div>
-              <span class="text-xs font-black text-stone-700 max-w-[80px] truncate" title="${receiverName}">${receiverName}</span>
+        const debtor = diff > 0 ? appState.partnerB : appState.partnerA;
+        const creditor = diff > 0 ? appState.partnerA : appState.partnerB;
+        settlementActionContainer.innerHTML = `
+          <div class="flex flex-col items-center justify-center text-center">
+            <div class="text-xs font-bold text-stone-500 mb-1">精算おねがい額</div>
+            <div class="text-lg font-black text-rose-600 mb-1.5">${settleAmount.toLocaleString()} 円</div>
+            <div class="bg-white border border-stone-300 rounded-xl py-1.5 px-3 flex items-center justify-center gap-2 text-xs font-bold text-stone-700">
+              <span>${debtor}</span>
+              <i class="fa-solid fa-arrow-right-long text-amber-500"></i>
+              <span>${creditor}</span>
             </div>
           </div>
         `;
       }
-    }
 
-    // --- もさおのアドバイス文 ---
-    function updateMosaoComment(totalA, totalB) {
-      const commentEl = document.getElementById('mosaoComment');
-      const diff = totalA - totalB;
-      const total = totalA + totalB;
-
-      if (total === 0) {
-        commentEl.innerText = "今月はまだお買い物の記録がないもさ。カレンダーと金額を入れて、下のボタンから登録するもさ！";
-        return;
-      }
-
-      const ratio = totalA / total;
-
-      if (diff === 0) {
-        commentEl.innerText = "す、すごいもさ！ふたりの支払いバランスが全く同じもさ！完璧なチームワークもさ、ご褒美に美味しいものでも食べるもさ？";
-      } else if (Math.abs(diff) < 1000) {
-        commentEl.innerText = "いい感じもさ！差額が1,000円以内でもさもさバランスを保っているもさ。このまま仲良くやりくりするもさ。";
-      } else if (ratio >= 0.7) {
-        commentEl.innerText = `${appState.partnerA}さんが全体の7割以上を支払っているもさ！少し負担が偏っているかもしれないもさ。${appState.partnerB}さん、美味しいコーヒーでも淹れて感謝を伝えるもさ。`;
-      } else if (ratio <= 0.3) {
-        commentEl.innerText = `${appState.partnerB}さんが全体の7割以上を支払っているもさ！少し負担が偏っているかもしれないもさ。${appState.partnerA}さん、肩でも叩いて「いつもありがとう」を伝えるチャンスもさ！`;
+      // もさおのアドバイスロジック
+      const mosaoComment = document.getElementById('mosaoComment');
+      if (grandTotal === 0) {
+        mosaoComment.innerText = "今月はまだ入力がないもさ！なにかお買い物したら「お買い物入力」からどんどん登録してほしいもさ🐾";
+      } else if (diff === 0) {
+        mosaoComment.innerText = `完璧なバランスもさ！ふたりの負担額がまったく同じ (${halfAmount.toLocaleString()}円) になってるもさ。素晴らしい連携もさ！✨`;
       } else {
-        const leader = diff > 0 ? appState.partnerA : appState.partnerB;
-        commentEl.innerText = `今月は${leader}さんが少し多めに出してくれているもさ。月末にポチッと精算するか、今度は逆の人が出すとちょうどよくなるもさ〜。`;
+        const debtor = diff > 0 ? appState.partnerB : appState.partnerA;
+        if (settleAmount < 1000) {
+          mosaoComment.innerText = `いいバランスもさ！誤差はたったの ${settleAmount.toLocaleString()}円 だもさ。月末にコーヒー1杯奢るくらいでピッタリになるもさ🐾`;
+        } else if (settleAmount < 10000) {
+          mosaoComment.innerText = `順調もさ！今は ${debtor} のお支払いが少し足りないみたいもさ。精算チェックを参考にして調整するといいもさ🐾`;
+        } else {
+          mosaoComment.innerText = `ちょっと差が開いてきたもさ！ ${debtor} は、これからのお買い物を多めに担当するか、お財布に ${settleAmount.toLocaleString()}円 精算して戻すとスッキリするもさ🐾`;
+        }
       }
+
+      // 履歴一覧のレンダリング
+      renderHistoryList(currentMonthRecords);
     }
 
-    // --- 履歴一覧描画 ---
+    // --- 履歴一覧描画処理 ---
     function renderHistoryList(records) {
       const container = document.getElementById('historyContainer');
-      container.innerHTML = '';
-
       if (records.length === 0) {
         container.innerHTML = `
-          <div class="flex flex-col items-center justify-center h-48 text-stone-400 font-bold">
-            <i class="fa-regular fa-folder-open text-3xl mb-2"></i>
-            この月のお買い物履歴はまだありません
+          <div class="text-center py-10 text-stone-400 font-bold text-xs flex flex-col items-center justify-center gap-2">
+            <i class="fa-regular fa-folder-open text-2xl text-stone-300"></i>
+            この月のお買い物データはありませんもさ
           </div>
         `;
         return;
       }
 
-      // 並び替え処理 (デフォルト desc：新しい順)
+      // ソート適用
       const sorted = [...records].sort((a, b) => {
-        const dateA = new Date(a.date);
-        const dateB = new Date(b.date);
-        return appState.sortOrder === 'desc' ? dateB - dateA : dateA - dateB;
+        if (appState.sortOrder === 'desc') {
+          return b.date.localeCompare(a.date) || b.id.localeCompare(a.id);
+        } else {
+          return a.date.localeCompare(b.date) || a.id.localeCompare(b.id);
+        }
       });
 
-      sorted.forEach(rec => {
-        const isPayeeA = rec.payee === 'A';
-        const payeeName = isPayeeA ? appState.partnerA : appState.partnerB;
+      container.innerHTML = sorted.map(r => {
+        const isA = r.payee === 'A';
+        const colorClass = isA ? 'border-amber-400 bg-amber-50/25' : 'border-emerald-500 bg-emerald-50/25';
+        const badgeColor = isA ? 'bg-amber-400 text-stone-800' : 'bg-emerald-500 text-white';
+        const payeeName = isA ? appState.partnerA : appState.partnerB;
         
-        // 日付の曜日などの補正
-        const d = new Date(rec.date);
-        const dateStr = `${d.getMonth() + 1}/${d.getDate()}`;
-        const dayOfWeek = ["日", "月", "火", "水", "木", "金", "土"][d.getDay()];
-
-        // DOMの作成
-        const item = document.createElement('div');
-        item.className = `bg-white border-2 border-stone-800 rounded-xl p-3 mb-2 shadow-sm hover:shadow-md transition-shadow flex items-center justify-between gap-2 relative overflow-hidden`;
-        
-        // 支払者による左ボーダー色分け
-        if (isPayeeA) {
-          item.classList.add('border-l-8', 'border-l-amber-400');
-        } else {
-          item.classList.add('border-l-8', 'border-l-emerald-400');
-        }
-
-        item.innerHTML = `
-          <div class="flex items-center space-x-3 min-w-0">
-            <!-- 日付表示 -->
-            <div class="text-center bg-stone-100 rounded-lg p-1.5 min-w-[45px] border border-stone-200">
-              <p class="text-[10px] font-black text-stone-400 leading-none mb-0.5">${dayOfWeek}</p>
-              <p class="text-xs font-black text-stone-700 leading-none">${dateStr}</p>
+        return `
+          <div class="border-l-4 ${colorClass} bg-white rounded-r-xl p-3 border-y border-r border-stone-200 shadow-sm flex items-center justify-between mb-2">
+            <div class="flex-grow min-w-0 pr-2">
+              <div class="flex items-center space-x-2 mb-1">
+                <span class="text-[10px] font-bold text-stone-400 font-mono">${r.date}</span>
+                <span class="px-1.5 py-0.5 text-[9px] font-black rounded-full ${badgeColor}">${payeeName}</span>
+              </div>
+              <div class="text-xs font-bold text-stone-700 truncate">${r.memo || 'お買い物'}</div>
             </div>
-            
-            <!-- メモ・支払者情報 -->
-            <div class="min-w-0">
-              <p class="text-xs font-black text-stone-800 truncate" title="${rec.memo || 'メモなし'}">
-                ${rec.memo || '<span class="text-stone-300 font-normal">メモなし</span>'}
-              </p>
-              <div class="flex items-center space-x-1.5 mt-0.5">
-                <span class="text-[9px] font-bold px-1.5 py-0.2 rounded-full ${isPayeeA ? 'bg-amber-100 text-amber-800' : 'bg-emerald-100 text-emerald-800'}">
-                  ${payeeName}
-                </span>
+            <div class="flex items-center space-x-3 flex-shrink-0">
+              <span class="text-sm font-black text-stone-800">${r.amount.toLocaleString()}<span class="text-[10px] font-bold text-stone-400 ml-0.5">円</span></span>
+              <div class="flex items-center space-x-1.5">
+                <button onclick="editRecordState('${r.id}')" class="text-stone-400 hover:text-stone-700 p-1" title="編集">
+                  <i class="fa-solid fa-pen text-xs"></i>
+                </button>
+                <button onclick="deleteRecordConfirm('${r.id}')" class="text-stone-300 hover:text-rose-600 p-1" title="削除">
+                  <i class="fa-regular fa-trash-can text-xs"></i>
+                </button>
               </div>
             </div>
           </div>
-
-          <!-- 金額 & アクションボタン -->
-          <div class="flex items-center space-x-2 flex-shrink-0">
-            <span class="font-black text-sm text-stone-800">
-              ¥${rec.amount.toLocaleString()}
-            </span>
-            
-            <!-- 操作メニュー -->
-            <div class="flex space-x-0.5">
-              <button onclick="startEditRecord('${rec.id}')" class="w-7 h-7 bg-stone-50 hover:bg-stone-100 border border-stone-300 rounded-lg flex items-center justify-center text-stone-500 hover:text-stone-800 transition-colors" title="編集">
-                <i class="fa-regular fa-pen-to-square text-xs"></i>
-              </button>
-              <button onclick="deleteRecordConfirm('${rec.id}')" class="w-7 h-7 bg-rose-50 hover:bg-rose-100 border border-rose-200 rounded-lg flex items-center justify-center text-rose-400 hover:text-rose-600 transition-colors" title="削除">
-                <i class="fa-regular fa-trash-can text-xs"></i>
-              </button>
-            </div>
-          </div>
         `;
-
-        container.appendChild(item);
-      });
+      }).join('');
     }
 
-    // --- イベントハンドラー・登録/変更系 ---
-    
-    // 支払者セレクタボタンの選択状態切替
+    // --- かんたん入力ヘルパー & 月移動 ---
+    function adjustAmount(val) {
+      const field = document.getElementById('inputAmount');
+      const current = Number(field.value) || 0;
+      field.value = current + val;
+    }
+
+    function clearAmount() {
+      document.getElementById('inputAmount').value = '';
+    }
+
+    function setMemo(memo) {
+      document.getElementById('inputMemo').value = memo;
+    }
+
+    function changeMonth(delta) {
+      const date = new Date(appState.currentMonth);
+      date.setMonth(date.getMonth() + delta);
+      appState.currentMonth = date;
+      updateUI();
+    }
+
+    function setToCurrentMonth() {
+      appState.currentMonth = new Date();
+      updateUI();
+    }
+
+    function toggleSortOrder() {
+      appState.sortOrder = appState.sortOrder === 'desc' ? 'asc' : 'desc';
+      const btn = document.getElementById('btnSortOrder');
+      if (appState.sortOrder === 'desc') {
+        btn.innerHTML = `日付の新しい順 <i class="fa-solid fa-arrow-down-short-wide ml-0.5"></i>`;
+      } else {
+        btn.innerHTML = `日付の古い順 <i class="fa-solid fa-arrow-up-wide-short ml-0.5"></i>`;
+      }
+      updateUI();
+    }
+
+    // --- お買い物記録の保存（登録＆更新） ---
     function selectPayee(payee) {
       document.getElementById('inputPayee').value = payee;
       const btnA = document.getElementById('btnPayeeA');
@@ -843,311 +847,332 @@
         btnB.className = "py-2 px-3 border-2 border-stone-200 bg-stone-50 rounded-xl text-stone-500 font-bold text-sm transition-all flex items-center justify-center gap-2";
       } else {
         btnA.className = "py-2 px-3 border-2 border-stone-200 bg-stone-50 rounded-xl text-stone-500 font-bold text-sm transition-all flex items-center justify-center gap-2";
-        btnB.className = "py-2 px-3 border-2 border-emerald-400 bg-emerald-50 rounded-xl text-stone-800 font-black text-sm transition-all flex items-center justify-center gap-2";
+        btnB.className = "py-2 px-3 border-2 border-emerald-500 bg-emerald-50 rounded-xl text-stone-800 font-black text-sm transition-all flex items-center justify-center gap-2";
       }
     }
 
-    // クイック金額入力補助
-    function adjustAmount(val) {
-      const input = document.getElementById('inputAmount');
-      let current = parseInt(input.value) || 0;
-      input.value = current + val;
-    }
-
-    // 金額クリア
-    function clearAmount() {
-      document.getElementById('inputAmount').value = '';
-    }
-
-    // クイックカテゴリ入力
-    function setMemo(text) {
-      document.getElementById('inputMemo').value = text;
-    }
-
-    // フォーム送信（新規・編集共通）
     function handleFormSubmit(e) {
       e.preventDefault();
-
+      
       const editId = document.getElementById('editRecordId').value;
       const date = document.getElementById('inputDate').value;
       const payee = document.getElementById('inputPayee').value;
-      const amount = parseInt(document.getElementById('inputAmount').value) || 0;
+      const amount = Number(document.getElementById('inputAmount').value);
       const memo = document.getElementById('inputMemo').value.trim();
 
-      if (!date || amount <= 0) {
-        showCustomDialog("入力エラー", "日付と、1円以上の金額を正しく入力してくださいもさ。", "fa-triangle-exclamation", false);
+      if (!date || isNaN(amount) || amount < 0) {
+        showToast("正しい金額・日付を入れてほしいもさ！🐾", "fa-circle-exclamation");
         return;
       }
 
       if (editId) {
-        // 編集保存
+        // 編集・更新処理
         const index = appState.records.findIndex(r => r.id === editId);
         if (index !== -1) {
-          appState.records[index] = {
-            ...appState.records[index],
-            date,
-            payee,
-            amount,
-            memo
-          };
+          appState.records[index].date = date;
+          appState.records[index].payee = payee;
+          appState.records[index].amount = amount;
+          appState.records[index].memo = memo || "お買い物";
+          showToast("記録をアップデートしたもさ！🐾", "fa-circle-check");
         }
         cancelEditState();
       } else {
         // 新規登録
         const newRecord = {
-          id: 'rec-' + Date.now() + '-' + Math.random().toString(36).substr(2, 4),
-          date,
-          payee,
-          amount,
-          memo
+          id: crypto.randomUUID(),
+          date: date,
+          payee: payee,
+          amount: amount,
+          memo: memo || "お買い物"
         };
         appState.records.push(newRecord);
-
-        // 入力した日付が現在の表示月と違う場合、自動的にその月に表示を切り替える
-        const inputMonth = new Date(date);
-        if (inputMonth.getFullYear() !== appState.currentMonth.getFullYear() || inputMonth.getMonth() !== appState.currentMonth.getMonth()) {
-          appState.currentMonth = inputMonth;
-        }
+        showToast("お買い物を新しく保存したもさ！🐾", "fa-circle-check");
       }
 
-      // 保存・更新
       saveRecordsToStorage();
-      updateUI();
-
-      // フォームの金額とメモ部分だけクリア（日付と支払者は連続入力しやすいように保持）
+      
+      // 表示中の月を入力した日付の月に自動変更
+      const [y, m] = date.split('-').map(Number);
+      appState.currentMonth = new Date(y, m - 1, 1);
+      
+      // フォームリセット
       document.getElementById('inputAmount').value = '';
       document.getElementById('inputMemo').value = '';
+
+      updateUI();
     }
 
-    // 編集モードへの移行
-    function startEditRecord(id) {
+    // 編集ステータスに移行
+    function editRecordState(id) {
       const record = appState.records.find(r => r.id === id);
       if (!record) return;
 
-      // フォームに入力値をセット
       document.getElementById('editRecordId').value = record.id;
       document.getElementById('inputDate').value = record.date;
-      selectPayee(record.payee);
       document.getElementById('inputAmount').value = record.amount;
       document.getElementById('inputMemo').value = record.memo;
+      selectPayee(record.payee);
 
-      // ボタンの見た目を更新
-      document.getElementById('submitBtnText').innerText = "変更を保存する";
+      document.getElementById('submitBtnText').innerText = "変更内容で保存する";
       document.getElementById('btnCancelEdit').classList.remove('hidden');
-      
-      // 入力フォームまでスクロール（モバイル向け）
-      document.getElementById('recordForm').scrollIntoView({ behavior: 'smooth' });
+
+      // スムーズに入力フォームまでスクロール
+      document.getElementById('formContainer').scrollIntoView({ behavior: 'smooth' });
     }
 
-    // 編集モードの解除
+    // 編集のキャンセル
     function cancelEditState() {
-      document.getElementById('editRecordId').value = '';
+      document.getElementById('editRecordId').value = "";
       document.getElementById('submitBtnText').innerText = "この内容で登録する";
       document.getElementById('btnCancelEdit').classList.add('hidden');
-      document.getElementById('inputAmount').value = '';
-      document.getElementById('inputMemo').value = '';
       
-      // 日付を今日に戻す
+      // 入力フォームクリア（日付は本日に復元）
       const todayStr = new Date().toISOString().substring(0, 10);
       document.getElementById('inputDate').value = todayStr;
+      document.getElementById('inputAmount').value = '';
+      document.getElementById('inputMemo').value = '';
+      selectPayee('A');
     }
 
-    // 削除確認
+    // 履歴の個々削除
     function deleteRecordConfirm(id) {
-      const rec = appState.records.find(r => r.id === id);
-      if (!rec) return;
-
-      const payerName = rec.payee === 'A' ? appState.partnerA : appState.partnerB;
-      const message = `${rec.date} の「${rec.memo || 'メモなし'}」 (¥${rec.amount.toLocaleString()}) を削除してもよろしいですかもさ？`;
-
-      showCustomDialog("データの削除確認", message, "fa-trash-can", true, () => {
+      showConfirm("このお買い物の記録を削除して大丈夫もさ？🐾", () => {
         appState.records = appState.records.filter(r => r.id !== id);
         saveRecordsToStorage();
-        // 編集中のものを消した場合は編集モードを解除
-        if (document.getElementById('editRecordId').value === id) {
-          cancelEditState();
-        }
         updateUI();
-        closeCustomDialog();
+        showToast("記録を消去したもさ！🐾", "fa-circle-check");
       });
     }
 
-    // --- 月切替処理 ---
-    function changeMonth(diff) {
-      const year = appState.currentMonth.getFullYear();
-      const month = appState.currentMonth.getMonth();
-      
-      appState.currentMonth = new Date(year, month + diff, 1);
-      cancelEditState();
-      updateUI();
+    // 全リセット確認
+    function clearAllDataConfirm() {
+      showConfirm("今までのすべての記録を完全に消去して初期化するもさ？この操作は取り消せないもさ🐾", () => {
+        appState.records = [];
+        saveRecordsToStorage();
+        updateUI();
+        showToast("すべてのデータをまっさらにリセットしたもさ！🐾", "fa-trash-can");
+      });
     }
 
-    // 今月に戻す
-    function setToCurrentMonth() {
-      appState.currentMonth = new Date();
-      cancelEditState();
-      updateUI();
-    }
-
-    // ソート順の変更
-    function toggleSortOrder() {
-      appState.sortOrder = appState.sortOrder === 'desc' ? 'asc' : 'desc';
-      const btn = document.getElementById('btnSortOrder');
-      if (appState.sortOrder === 'desc') {
-        btn.innerHTML = '日付の新しい順 <i class="fa-solid fa-arrow-down-short-wide ml-0.5"></i>';
-      } else {
-        btn.innerHTML = '日付の古い順 <i class="fa-solid fa-arrow-up-wide-short ml-0.5"></i>';
-      }
-      updateUI();
-    }
-
-    // --- 設定（パートナー名）関連 ---
+    // --- パートナー設定モーダルの開閉管理 ---
     function openConfigModal() {
       document.getElementById('configPartnerA').value = appState.partnerA;
       document.getElementById('configPartnerB').value = appState.partnerB;
 
       const modal = document.getElementById('configModal');
       const body = document.getElementById('configModalBody');
-      modal.classList.remove('pointer-events-none', 'opacity-0');
+      modal.classList.remove('opacity-0', 'pointer-events-none');
       body.classList.remove('scale-95');
+      body.classList.add('scale-100');
     }
 
     function closeConfigModal() {
       const modal = document.getElementById('configModal');
       const body = document.getElementById('configModalBody');
-      modal.classList.add('pointer-events-none', 'opacity-0');
+      modal.classList.add('opacity-0', 'pointer-events-none');
+      body.classList.remove('scale-100');
       body.classList.add('scale-95');
+      document.getElementById('importArea').classList.add('hidden');
     }
 
     function saveConfig() {
-      const nameA = document.getElementById('configPartnerA').value.trim() || "ユーザーA";
-      const nameB = document.getElementById('configPartnerB').value.trim() || "ユーザーB";
+      const nameA = document.getElementById('configPartnerA').value.trim();
+      const nameB = document.getElementById('configPartnerB').value.trim();
+
+      if (!nameA || !nameB) {
+        showToast("お名前は空欄にできないもさ！🐾", "fa-triangle-exclamation");
+        return;
+      }
 
       appState.partnerA = nameA;
       appState.partnerB = nameB;
-
+      
       saveConfigToStorage();
       updateUI();
       closeConfigModal();
+      showToast("パートナー名を更新したもさ！🐾", "fa-circle-check");
     }
 
-    // --- データのインポート・エクスポート（2人での共有・バックアップ用） ---
-    function exportData() {
-      const data = {
-        records: appState.records,
+    // --- 【スマート同期機能】データ書き出しと読み込み処理 ---
+
+    // 今月分だけのデータを抜き出して書き出す機能
+    function exportCurrentMonthData() {
+      const year = appState.currentMonth.getFullYear();
+      const month = appState.currentMonth.getMonth() + 1;
+
+      const currentMonthRecords = appState.records.filter(r => {
+        const [rYear, rMonth] = r.date.split("-").map(Number);
+        return rYear === year && rMonth === month;
+      });
+
+      const patchData = {
+        type: "month_patch",
+        year: year,
+        month: month,
         partnerA: appState.partnerA,
-        partnerB: appState.partnerB
+        partnerB: appState.partnerB,
+        records: currentMonthRecords
       };
-      const jsonStr = JSON.stringify(data);
-      
-      const tempTextArea = document.createElement('textarea');
-      tempTextArea.value = jsonStr;
-      document.body.appendChild(tempTextArea);
-      tempTextArea.select();
-      try {
-        document.execCommand('copy');
-        showCustomDialog("書き出し成功", "データをクリップボードにコピーしましたもさ！LINEやメールでパートナーに送って共有してね。", "fa-circle-check", false);
-      } catch (err) {
-        showCustomDialog("エラー", "コピーに失敗しました。手動でコピーしてくださいもさ。", "fa-triangle-exclamation", false);
-      }
-      document.body.removeChild(tempTextArea);
+
+      const jsonStr = JSON.stringify(patchData);
+      copyToClipboard(jsonStr);
+      showToast(`${year}年${month}月の同期コードをコピーしたもさ！LINE等に貼ってね🐾`, "fa-circle-check");
     }
 
+    // すべての履歴（バックアップ用）を書き出す機能
+    function exportAllData() {
+      const fullData = {
+        partnerA: appState.partnerA,
+        partnerB: appState.partnerB,
+        records: appState.records
+      };
+      const jsonStr = JSON.stringify(fullData);
+      copyToClipboard(jsonStr);
+      showToast("すべての記録（フルバックアップ）をコピーしたもさ🐾", "fa-circle-check");
+    }
+
+    // 読み込みエリアの展開
     function openImportArea() {
       const area = document.getElementById('importArea');
       area.classList.toggle('hidden');
+      document.getElementById('importJsonText').value = '';
     }
 
-    function importData() {
-      const jsonStr = document.getElementById('importJsonText').value.trim();
-      if (!jsonStr) {
-        showCustomDialog("インポートエラー", "データが入力されていませんもさ。", "fa-triangle-exclamation", false);
+    // 同期データの読み込み（マージ or 完全上書き）
+    function importData(isOverwrite = false) {
+      const rawText = document.getElementById('importJsonText').value.trim();
+      if (!rawText) {
+        showToast("コードを貼り付けてほしいもさ🐾", "fa-circle-exclamation");
         return;
       }
-      
+
       try {
-        const parsed = JSON.parse(jsonStr);
-        if (parsed && Array.isArray(parsed.records)) {
-          appState.records = parsed.records;
-          if (parsed.partnerA) appState.partnerA = parsed.partnerA;
-          if (parsed.partnerB) appState.partnerB = parsed.partnerB;
-          
-          saveRecordsToStorage();
-          saveConfigToStorage();
-          updateUI();
-          
-          document.getElementById('importJsonText').value = '';
-          document.getElementById('importArea').classList.add('hidden');
-          closeConfigModal();
-          
-          showCustomDialog("読み込み成功", "データの復元・同期が完了しましたもさ！", "fa-circle-check", false);
+        const parsed = JSON.parse(rawText);
+
+        if (parsed.type === "month_patch") {
+          // 1. 今月分パッチデータ（month_patch）の場合
+          const { year, month, partnerA, partnerB, records } = parsed;
+          if (!year || !month || !Array.isArray(records)) {
+            throw new Error("Invalid patch data format");
+          }
+
+          if (isOverwrite) {
+            // 上書きの場合：貼り付けられたデータ側の年月の既存データを一旦すべて削除
+            appState.records = appState.records.filter(r => {
+              const [rYear, rMonth] = r.date.split("-").map(Number);
+              return !(rYear === year && rMonth === month);
+            });
+            appState.records.push(...records);
+          } else {
+            // マージの場合：UUIDをキーにして競合しないようにマージ結合
+            const recordsMap = new Map(appState.records.map(r => [r.id, r]));
+            records.forEach(newRec => {
+              recordsMap.set(newRec.id, newRec);
+            });
+            appState.records = Array.from(recordsMap.values());
+          }
+
+          // パートナー名も合わせて更新
+          if (partnerA) appState.partnerA = partnerA;
+          if (partnerB) appState.partnerB = partnerB;
+
+          // 同期した月へ自動切り替え
+          appState.currentMonth = new Date(year, month - 1, 1);
+          showToast(`${year}年${month}月のデータを読み込んで同期したもさ🐾`, "fa-circle-check");
+
         } else {
-          showCustomDialog("フォーマットエラー", "データの形式が正しくありませんもさ。", "fa-triangle-exclamation", false);
+          // 2. 過去を含む全データ（フルバックアップ）の場合
+          if (!parsed.records || !Array.isArray(parsed.records)) {
+            throw new Error("Invalid format");
+          }
+
+          if (isOverwrite) {
+            appState.partnerA = parsed.partnerA || appState.partnerA;
+            appState.partnerB = parsed.partnerB || appState.partnerB;
+            appState.records = parsed.records;
+          } else {
+            // マージ
+            const recordsMap = new Map(appState.records.map(r => [r.id, r]));
+            parsed.records.forEach(newRec => {
+              recordsMap.set(newRec.id, newRec);
+            });
+            appState.records = Array.from(recordsMap.values());
+            appState.partnerA = parsed.partnerA || appState.partnerA;
+            appState.partnerB = parsed.partnerB || appState.partnerB;
+          }
+          showToast("全てのデータを同期・マージしたもさ🐾", "fa-circle-check");
         }
+
+        // 保存と更新
+        saveRecordsToStorage();
+        saveConfigToStorage();
+        updateUI();
+        closeConfigModal();
+
       } catch (e) {
-        showCustomDialog("解析エラー", "データの解析に失敗しました。正しいデータを貼り付けてくださいもさ。", "fa-triangle-exclamation", false);
+        console.error(e);
+        showToast("データの形式がちがうみたいもさ。コピーに失敗しているかもさ🐾", "fa-triangle-exclamation");
       }
     }
 
-    // --- 全データリセット処理 ---
-    function clearAllDataConfirm() {
-      showCustomDialog(
-        "データのリセット確認", 
-        "これまでに登録されたすべての支払履歴データが削除されます。元に戻すことはできません。リセットしてもよろしいですかもさ？", 
-        "fa-triangle-exclamation", 
-        true, 
-        () => {
-          appState.records = [];
-          saveRecordsToStorage();
-          cancelEditState();
-          updateUI();
-          closeCustomDialog();
-        }
-      );
+    // 安全なクリップボードコピー
+    function copyToClipboard(text) {
+      const textarea = document.createElement("textarea");
+      textarea.value = text;
+      textarea.style.position = "fixed";
+      textarea.style.opacity = "0";
+      document.body.appendChild(textarea);
+      textarea.select();
+      try {
+        document.execCommand("copy");
+      } catch (err) {
+        console.error("Copy failed", err);
+      }
+      document.body.removeChild(textarea);
     }
 
-    // --- カスタムダイアログ管理（不快なブラウザalert撲滅） ---
-    function showCustomDialog(title, message, iconClass, showCancel, confirmCallback) {
-      document.getElementById('dialogTitle').innerText = title;
-      document.getElementById('dialogMessage').innerText = message;
+    // --- カスタム通知ダイアログ（alert/confirm の代替） ---
+    function showToast(message, iconClass = "fa-circle-info") {
+      const toast = document.getElementById("toastMessage");
+      const icon = document.getElementById("toastIcon");
+      const text = document.getElementById("toastText");
+
+      icon.className = `fa-solid ${iconClass}`;
+      text.innerText = message;
+
+      toast.classList.remove("translate-y-12", "opacity-0");
+      toast.classList.add("translate-y-0", "opacity-100");
+
+      setTimeout(() => {
+        toast.classList.remove("translate-y-0", "opacity-100");
+        toast.classList.add("translate-y-12", "opacity-0");
+      }, 4000);
+    }
+
+    function showConfirm(message, onConfirm) {
+      const dialog = document.getElementById("customDialog");
+      const body = document.getElementById("customDialogBody");
       
-      const iconEl = document.getElementById('dialogIcon');
-      iconEl.className = `fa-solid ${iconClass || 'fa-triangle-exclamation'} text-lg`;
-      
-      const cancelBtn = document.getElementById('dialogCancelBtn');
-      if (showCancel) {
-        cancelBtn.classList.remove('hidden');
-      } else {
-        cancelBtn.classList.add('hidden');
-      }
+      document.getElementById("dialogTitle").innerText = "もさおからの確認";
+      document.getElementById("dialogMessage").innerText = message;
 
-      // 決定ボタンのイベント紐付け
-      const confirmBtn = document.getElementById('dialogConfirmBtn');
-      // クローンして以前のイベントリスナーを破棄
-      const newConfirmBtn = confirmBtn.cloneNode(true);
-      confirmBtn.parentNode.replaceChild(newConfirmBtn, confirmBtn);
+      dialog.classList.remove("opacity-0", "pointer-events-none");
+      body.classList.remove("scale-95");
+      body.classList.add("scale-100");
 
-      newConfirmBtn.addEventListener('click', () => {
-        if (confirmCallback) {
-          confirmCallback();
-        } else {
-          closeCustomDialog();
-        }
-      });
-
-      const dialog = document.getElementById('customDialog');
-      const body = document.getElementById('customDialogBody');
-      dialog.classList.remove('pointer-events-none', 'opacity-0');
-      body.classList.remove('scale-95');
+      document.getElementById("dialogConfirmBtn").onclick = () => {
+        closeCustomDialog();
+        onConfirm();
+      };
     }
 
     function closeCustomDialog() {
-      const dialog = document.getElementById('customDialog');
-      const body = document.getElementById('customDialogBody');
-      dialog.classList.add('pointer-events-none', 'opacity-0');
-      body.classList.add('scale-95');
+      const dialog = document.getElementById("customDialog");
+      const body = document.getElementById("customDialogBody");
+      dialog.classList.add("opacity-0", "pointer-events-none");
+      body.classList.remove("scale-100");
+      body.classList.add("scale-95");
     }
-
   </script>
 </body>
 </html>
